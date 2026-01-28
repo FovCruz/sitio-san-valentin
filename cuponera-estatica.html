@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuponera de Croque ❤️</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script type="text/javascript">
+        (function () {
+            // Tu Public Key real
+            emailjs.init("Wa5ifEqnS-Rath25z");
+        })();
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+        /* --- FONDO ANIMADO --- */
+        /* Ajustado para que no haya huecos */
+        .area {
+            background: -webkit-linear-gradient(to left, #fce4ec, #f8bbd0);
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .circles li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            animation: animate 15s linear infinite;
+            /* Tiempo base más rápido */
+            bottom: -150px;
+            font-size: 20px;
+            opacity: 0;
+            /* Empiezan invisibles */
+        }
+
+        /* --- CONFIGURACIÓN DE CORAZONES PARA LLENAR PANTALLA --- */
+        .circles li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+            font-size: 50px;
+        }
+
+        .circles li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+            font-size: 30px;
+        }
+
+        .circles li:nth-child(3) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 4s;
+            font-size: 40px;
+        }
+
+        .circles li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+            font-size: 60px;
+        }
+
+        .circles li:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+            font-size: 30px;
+        }
+
+        .circles li:nth-child(6) {
+            left: 75%;
+            width: 110px;
+            height: 110px;
+            animation-delay: 3s;
+            font-size: 55px;
+        }
+
+        .circles li:nth-child(7) {
+            left: 35%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 7s;
+            font-size: 70px;
+        }
+
+        .circles li:nth-child(8) {
+            left: 50%;
+            width: 25px;
+            height: 25px;
+            animation-delay: 15s;
+            animation-duration: 45s;
+            font-size: 35px;
+        }
+
+        .circles li:nth-child(9) {
+            left: 20%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 2s;
+            animation-duration: 35s;
+            font-size: 25px;
+        }
+
+        .circles li:nth-child(10) {
+            left: 85%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 0s;
+            animation-duration: 11s;
+            font-size: 65px;
+        }
+
+        /* Agregamos más para evitar espacios vacíos */
+        .circles li:nth-child(11) {
+            left: 5%;
+            width: 50px;
+            height: 50px;
+            animation-delay: 5s;
+            animation-duration: 14s;
+            font-size: 40px;
+        }
+
+        .circles li:nth-child(12) {
+            left: 15%;
+            width: 30px;
+            height: 30px;
+            animation-delay: 9s;
+            animation-duration: 20s;
+            font-size: 20px;
+        }
+
+        .circles li:nth-child(13) {
+            left: 90%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 1s;
+            animation-duration: 15s;
+            font-size: 50px;
+        }
+
+        .circles li:nth-child(14) {
+            left: 55%;
+            width: 40px;
+            height: 40px;
+            animation-delay: 6s;
+            animation-duration: 22s;
+            font-size: 30px;
+        }
+
+        .circles li:nth-child(15) {
+            left: 30%;
+            width: 25px;
+            height: 25px;
+            animation-delay: 12s;
+            animation-duration: 18s;
+            font-size: 25px;
+        }
+
+        .circles li:nth-child(16) {
+            left: 80%;
+            width: 90px;
+            height: 90px;
+            animation-delay: 4s;
+            animation-duration: 25s;
+            font-size: 80px;
+        }
+
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+                border-radius: 0;
+            }
+
+            10% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+                border-radius: 50%;
+            }
+        }
+
+        /* --- ESTILOS GENERALES --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            position: relative;
+            background-color: #fce4ec;
+        }
+
+        /* --- CARDS --- */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 3% 3% 15% 3%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 3px dashed #4caf50;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover:not(.redeemed-card) {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-color: #2e7d32;
+        }
+
+        /* --- ESTADO CANJEADO (CONTENEDOR) --- */
+        .card.redeemed-card {
+            opacity: 0.8;
+            background: #fcfcfc;
+            border: 3px dashed #bdbdbd !important;
+            /* No usamos grayscale total para que se vea el sello rojo */
+        }
+
+        /* --- SELLO DE CANJEADO (REQUERIMIENTO 3) --- */
+        .stamp-redeemed {
+            border: 3px solid #e91e63;
+            /* Color rojizo/rosa */
+            color: #e91e63;
+            border-radius: 3px;
+            /* Bordes levemente redondeados */
+            padding: 5px 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            display: inline-block;
+            transform: rotate(-15deg);
+            /* Diagonal */
+            margin-top: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            letter-spacing: 2px;
+        }
+
+        /* --- CARD SORPRESA --- */
+        .card.surprise-card {
+            cursor: pointer;
+            border: 3px dashed #ff1493;
+        }
+
+        .card.surprise-card:hover {
+            border-color: #ff69b4;
+            background: #fff0f6;
+        }
+
+        .card.surprise-card.winner {
+            border: 3px solid #4caf50;
+            border-style: solid;
+        }
+
+        /* --- TEXTOS --- */
+        h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin: 15px 0 10px 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .icon {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* --- BOTONES --- */
+        .btn-action {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #ff1493;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+        .btn-action:hover:not(.disabled) {
+            background: #ff69b4;
+            transform: scale(1.02);
+        }
+
+        .btn-action.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .btn-action.pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 20, 147, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(255, 20, 147, 0);
+            }
+        }
+
+        .wish-input,
+        .custom-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ff1493;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .wish-locked {
+            background: #fff5fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            color: #ff1493;
+            font-size: 0.9rem;
+            border: 1px dashed #ff1493;
+        }
+
+        .timer-badge {
+            display: inline-block;
+            background: #ffebee;
+            color: #ff1493;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-top: 8px;
+            border: 1px solid #ffcdd2;
+        }
+
+        .back-btn {
+            margin-bottom: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #e91e63;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid #e91e63;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn:hover {
+            background: #e91e63;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .gif-container {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gif-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .shaking {
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .disclaimer {
+            margin-top: 20px;
+            font-size: .75rem important;
+            color: #888;
+            font-style: italic;
+            padding: 0 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="area">
+        <ul class="circles">
+            <li><span>❤️</span></li>
+            <li><span>🖤</span></li>
+            <li><span>❤️</span></li>
+            <li><span>🤍</span></li>
+            <li><span>🖤</span></li>
+            <li><span>❤️</span></li>
+            <li><span>🤍</span></li>
+            <li><span>🖤</span></li>
+            <li><span>❤️</span></li>
+            <li><span>🤍</span></li>
+            <li><span>❤️</span></li>
+            <li><span>🖤</span></li>
+            <li><span>🤍</span></li>
+            <li><span>❤️</span></li>
+            <li><span>🖤</span></li>
+            <li><span>🤍</span></li>
+        </ul>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <button class="start-btn mb-10" onclick="backToDashboard()" style="
+            background: transparent;
+            border: 2px solid #ff8fa3;
+            color: #ff8fa3;
+            padding: 13px 38px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border-radius: 50px; /* Agregado para que se vea más suave */
+            cursor: pointer;
+        " onmouseover="this.style.background='rgba(255, 143, 163, 0.1)'; this.style.boxShadow='0 0 20px rgba(255, 143, 163, 0.4)';"
+            onmouseout="this.style.background='transparent'; this.style.boxShadow='none';">
+            ← Volver al Menú
+        </button>
+
+        <header class="text-center mb-10">
+            <br>
+            <h1 class="text-4xl font-bold text-pink-700 mb-4 drop-shadow-md">Feliz 14 de Febrero Mi Amor❤️</h1>
+            <div class="profile-pic-container flex justify-center mb-5">
+                <img src="public/img/1.jpeg" alt="Nosotros" class="profile-pic" onerror="this.style.display='none'">
+            </div>
+            <p class="text-pink-800 font-medium text-lg">Le regalo una cuponera de cosas para que hagamos juntitos <br>
+                exclusiva para ti mi (Nombre que quieras) ❤️</p>
+        </header>
+
+        <div class="surprise-container mb-8 max-w-md mx-auto">
+            <div id="surpriseCard" class="card surprise-card mystery" onclick="openSurprise()">
+                <div class="icon">🎁</div>
+                <h3 id="surpriseTitle" style="color: #880e4f;">Tu Regalo Sorpresa</h3>
+                <p id="surpriseSubtitle">Pincha para descubrir qué te ganaste hoy.</p>
+            </div>
+
+            <div id="surpriseWinner" class="card surprise-card winner" style="display: none;">
+                <div class="gif-container">
+                    <img id="gifImg" src="" alt="Gif reacción" class="gif-img" style="display: none;">
+                </div>
+                <h3 id="winnerTitle" style="color: #2e7d32;"></h3>
+
+                <div id="comodinSelector" style="display: none;">
+                    <div class="comodin-selector bg-gray-50 p-4 rounded-lg mb-4">
+                        <p class="mb-2 font-medium">¡Comodín! Elige tu el premio:</p>
+                        <select id="comodinSelect" class="custom-select" onchange="onSurpriseChange(this)">
+                            <option selected disabled>-- Elige alguna opción --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h2 id="prizeText" class="text-2xl font-bold text-green-600 my-3" style="display: none;"></h2>
+                <p class="small text-xs text-gray-500">¡Ya le avisé a Fabián que preparé tu cupón! 😎</p>
+                <div class="next-spin-timer mt-4">
+                    <small class="block text-gray-500">Próximo cupón en:</small>
+                    <div id="surpriseTimer" class="timer-badge" style="display: none;">⏳ <span id="timerText"></span>
+                    </div>
+                </div>
+
+                <div class="disclaimer">
+                    <p>* Si el plan no te gusta, convenceme para que te deje tirar devuelta 😉</p>
+                </div>
+            </div>
+        </div>
+
+        <hr class="border-t-2 border-pink-200 my-8 opacity-50">
+
+        <div class="grid" id="couponsGrid"></div>
+    </div>
+
+    <script>
+        // ========== CONFIGURACIÓN ==========
+        const EMAILJS_SERVICE_ID = "service_9vjfwhl";
+        const EMAILJS_TEMPLATE_ID = "template_bztji77";
+        const ADMIN_EMAIL = "fov.cruz@gmail.com";
+        const PARTNER_EMAIL = "correo_de_ella@ejemplo.com";
+
+        // ========== 2. CONFIGURACIÓN DE SORPRESAS CON GIFS ESPECÍFICOS ==========
+        // NOTA PARA FABIAN: Pega los links de tus GIFs en la propiedad 'gif'
+        const SURPRISE_POOL = [
+            {
+                text: '🍽️ Una cena o almuerzo preparado por mí',
+                gif: 'https://ca-times.brightspotcdn.com/dims4/default/48cae72/2147483647/strip/true/crop/600x400+0+0/resize/840x560!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F5e%2Fda%2F004498de43ffaabd96d2b6ec2291%2Fla-fo-how-to-boil-water-scrambled-eggs.gif'
+            },
+            {
+                text: '💃 Noche de baile en casa',
+                gif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGZ5eGZ5eGZ5eGZ5eGZ5eGZ5eGZ5eGZ5eGZ5eGZ5eGZ5eGZ5/13Y6LAZJqRspI4/giphy.gif'
+            },
+            {
+                text: '🎬 Maratón de películas a su elección',
+                gif: 'https://media.giphy.com/media/26AHG5KGFxSkQLB0Q/giphy.gif'
+            },
+            {
+                text: '💆‍♀️ Sesión de masaje relajante',
+                // AQUI ESTA EL GIF QUE ME PEDISTE ESPECIFICAMENTE:
+                gif: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgt_k4K3iu2Sgl0aK2yJTc7p7jGWjfYmgG_g&s'
+            },
+            {
+                text: '✈️ Escapada sorpresa de fin de semana',
+                gif: 'https://media.giphy.com/media/3o7qDEq2bMbcbPR52Q/giphy.gif'
+            },
+            {
+                text: '🌹 Ramo de flores sorpresa',
+                gif: 'https://media.giphy.com/media/l41lYCDgxP6655YIU/giphy.gif'
+            },
+            {
+                text: '🎵 Salida a la disco a bailar',
+                gif: 'https://media.giphy.com/media/blSTtZehjAZ8I/giphy.gif'
+            },
+            {
+                text: '🎁 Una sorpresa que tu propongas',
+                gif: 'https://media.giphy.com/media/3o7TKr3nzbh5Q1TibK/giphy.gif'
+            },
+            {
+                text: '🍫 Noche de chancheria y regaloneo',
+                gif: 'https://media.giphy.com/media/xT0xeMA62E1XIlup68/giphy.gif'
+            },
+            {
+                text: '📸 Sesión de fotos románticas',
+                gif: 'https://media.giphy.com/media/l2Je3qSgOfhOXvpq8/giphy.gif'
+            }
+        ];
+
+        // ========== CONFIGURACIÓN DE CUPONES ==========
+        const INITIAL_COUPONS = [
+            { id: 1, title: 'Almuerzo rico', emoji: '🥩', description: 'Yo cocino, yo sirvo, yo lavo. Ute solo come y regalonea.', isRedeemed: false },
+            { id: 2, title: 'Masaje Anti-Estrés', emoji: '💆‍♀️', description: 'Sesión de 15 minutos de masajes de espalda cuando quiera.', isRedeemed: false },
+            { id: 3, title: 'Antojo Express', emoji: '🍟', description: 'Helado, Filetitos de pollo, Papitas, Chocolate o lo que sea', isRedeemed: false, cooldownHours: 12, lastRedeemed: 0 },
+            { id: 4, title: 'Vale Comodín', emoji: '🃏', description: 'Escribe aquí lo que quieras para poder hacerlo juntos.', isRedeemed: false, requiresInput: true, userNote: '' }
+        ];
+
+        let coupons = [], surprise = null, currentGifUrl = null, isSpinning = false, surpriseHistory = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            renderCoupons();
+            checkDailySurprise();
+            updateTimers();
+            setInterval(updateTimers, 1000);
+        });
+
+        // ========== ENVÍO DE CORREO ==========
+        function sendEmailNotification(actionType, details) {
+            console.log("Enviando notificación a Fabián:", actionType, details);
+            const paramsAdmin = { message: `Cupón: ${details} | Tipo: ${actionType}`, email: ADMIN_EMAIL };
+
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, paramsAdmin)
+                .then(res => console.log("Notificación enviada", res.status))
+                .catch(err => console.error("Error correo", err));
+
+            if (PARTNER_EMAIL && PARTNER_EMAIL.includes("@")) {
+                const paramsPartner = {
+                    message: `¡Hola! Pediste el cupón "${details}" y ya fue enviado al Fabián.`,
+                    email: PARTNER_EMAIL
+                };
+                emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, paramsPartner);
+            }
+        }
+
+        // ========== FUNCIONES DE ESTADO ==========
+        function loadState() {
+            const savedCoupons = localStorage.getItem('loveCoupons');
+            coupons = savedCoupons ? JSON.parse(savedCoupons) : JSON.parse(JSON.stringify(INITIAL_COUPONS));
+            const savedHistory = localStorage.getItem('surpriseHistory');
+            if (savedHistory) surpriseHistory = JSON.parse(savedHistory);
+        }
+
+        function saveState() {
+            localStorage.setItem('loveCoupons', JSON.stringify(coupons));
+            localStorage.setItem('surpriseHistory', JSON.stringify(surpriseHistory));
+        }
+
+        // ========== SORPRESAS ==========
+        function checkDailySurprise() {
+            const savedData = localStorage.getItem('dailySurprise');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                if (parsedData.timestamp) {
+                    const now = Date.now();
+                    const twentyFourHours = 24 * 60 * 60 * 1000;
+                    if (now - parsedData.timestamp < twentyFourHours) {
+                        surprise = parsedData.surprise;
+                        currentGifUrl = parsedData.gifUrl;
+                        renderSurpriseWinner();
+                    } else {
+                        localStorage.removeItem('dailySurprise');
+                        surprise = null;
+                    }
+                }
+            }
+        }
+
+        function openSurprise() {
+            if (surprise || isSpinning) return;
+            isSpinning = true;
+            document.getElementById('surpriseCard').classList.add('shaking');
+            document.getElementById('surpriseTitle').textContent = 'Sorteando...';
+
+            let availableOptions = SURPRISE_POOL.filter(option => !surpriseHistory.includes(option.text));
+            if (availableOptions.length === 0) { availableOptions = SURPRISE_POOL; surpriseHistory = []; }
+            const selectedOption = availableOptions[Math.floor(Math.random() * availableOptions.length)];
+
+            setTimeout(() => {
+                surprise = selectedOption;
+                // USAMOS EL GIF DIRECTO DEL OBJETO (REQUERIMIENTO 2)
+                currentGifUrl = selectedOption.gif;
+
+                const dataToSave = { timestamp: Date.now(), surprise: selectedOption, gifUrl: currentGifUrl };
+                localStorage.setItem('dailySurprise', JSON.stringify(dataToSave));
+                surpriseHistory.push(selectedOption.text);
+                saveState();
+
+                isSpinning = false;
+                document.getElementById('surpriseCard').classList.remove('shaking');
+                renderSurpriseWinner();
+                triggerConfetti();
+                sendEmailNotification("Regalo Sorpresa", selectedOption.text);
+
+                // ALERTA BONITA DE PREMIO
+                Swal.fire({
+                    title: '¡Sorpresa!',
+                    text: `Te ganaste: ${selectedOption.text}`,
+                    imageUrl: currentGifUrl,
+                    imageWidth: 400,
+                    imageHeight: 200,
+                    imageAlt: 'Custom image',
+                    confirmButtonText: '¡Me encanta!',
+                    confirmButtonColor: '#ff1493'
+                });
+
+            }, 1500);
+        }
+
+        function renderSurpriseWinner() {
+            document.getElementById('surpriseCard').style.display = 'none';
+            document.getElementById('surpriseWinner').style.display = 'block';
+            if (currentGifUrl) {
+                document.getElementById('gifImg').src = currentGifUrl;
+                document.getElementById('gifImg').style.display = 'block';
+            }
+            document.getElementById('winnerTitle').textContent = `¡Te ganaste!:`;
+
+            if (surprise.text.includes('sorpresa que tu propongas')) {
+                document.getElementById('comodinSelector').style.display = 'block';
+                document.getElementById('prizeText').style.display = 'none';
+                populateComodinOptions();
+            } else {
+                document.getElementById('comodinSelector').style.display = 'none';
+                document.getElementById('prizeText').textContent = surprise.text;
+                document.getElementById('prizeText').style.display = 'block';
+            }
+        }
+
+        function populateComodinOptions() {
+            const select = document.getElementById('comodinSelect');
+            select.innerHTML = '<option selected disabled>-- Seleccioná una opción --</option>';
+            SURPRISE_POOL.filter(s => !s.text.includes('sorpresa que tu propongas')).forEach(option => {
+                const optionEl = document.createElement('option');
+                optionEl.value = option.text;
+                optionEl.textContent = option.text;
+                select.appendChild(optionEl);
+            });
+        }
+
+        function onSurpriseChange(select) {
+            const selectedText = select.value;
+            sendEmailNotification("Comodín Sorpresa", selectedText);
+            Swal.fire('¡Listo!', 'Excelente elección, ya lo anoté.', 'success');
+        }
+
+        // ========== CUPONES ==========
+        function renderCoupons() {
+            const grid = document.getElementById('couponsGrid');
+            grid.innerHTML = '';
+            coupons.forEach(coupon => {
+                const card = document.createElement('div');
+                // Agregamos clase redeemed-card si está canjeado
+                card.className = `card ${coupon.isRedeemed ? 'redeemed-card' : ''}`;
+
+                let statusHTML = '';
+                if (coupon.cooldownHours) {
+                    const now = Date.now();
+                    const cooldownMs = coupon.cooldownHours * 3600000;
+                    if (coupon.lastRedeemed && (now - coupon.lastRedeemed) < cooldownMs) {
+                        statusHTML = `<div class="status"><span id="btn-timer-${coupon.id}" class="btn-action disabled">Calculando...</span></div>`;
+                    } else {
+                        statusHTML = `<div class="status"><button class="btn-action pulse" onclick="redeemCoupon(${coupon.id})">¡Pedir Antojo!</button></div>`;
+                    }
+                } else if (coupon.requiresInput) {
+                    if (coupon.isRedeemed) {
+                        // REQUERIMIENTO 3: Botón diagonal tipo sello
+                        statusHTML = `<div class="wish-locked">Pediste: <strong>"${coupon.userNote}"</strong></div>
+                                      <div class="stamp-redeemed">CANJEADO</div>`;
+                    } else {
+                        statusHTML = `<textarea class="wish-input" id="note-${coupon.id}" placeholder="Escribe lo que quieras aquí..." rows="2">${coupon.userNote}</textarea>
+                                      <div class="status"><button class="btn-action" onclick="redeemCoupon(${coupon.id})">Activar comodín</button></div>`;
+                    }
+                } else {
+                    if (coupon.isRedeemed) {
+                        // REQUERIMIENTO 3: Botón diagonal tipo sello
+                        statusHTML = `<div class="stamp-redeemed">CANJEADO</div>`;
+                    } else {
+                        statusHTML = `<div class="status"><button class="btn-action pulse" onclick="redeemCoupon(${coupon.id})">Canjear</button></div>`;
+                    }
+                }
+
+                card.innerHTML = `
+                    <div class="icon">${coupon.emoji}</div>
+                    <h3>${coupon.title}</h3>
+                    <br>
+                    <p>${coupon.description}</p>
+                    <br>
+                    ${statusHTML}
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function redeemCoupon(id) {
+            const coupon = coupons.find(c => c.id === id);
+            if (!coupon) return;
+
+            let userNote = "";
+            if (coupon.requiresInput) {
+                userNote = document.getElementById(`note-${id}`).value;
+                if (!userNote || userNote.trim().length < 3) {
+                    Swal.fire('Oiga!', '¡Escribe qué quieres antes de canjear!', 'warning');
+                    return;
+                }
+            }
+
+            // REQUERIMIENTO: Alerta bonita con diseño romántico
+            Swal.fire({
+                title: `¿Canjear "${coupon.title}"?`,
+                text: "¡Avisaré a Fabián inmediatamente!",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ff1493',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '¡Sí, lo quiero!',
+                cancelButtonText: 'Mmm, mejor espero'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Acción confirmada
+                    if (coupon.requiresInput) {
+                        coupon.userNote = userNote;
+                        sendEmailNotification("Cupón Comodín", `${coupon.title} - Nota: "${userNote}"`);
+                    } else {
+                        sendEmailNotification("Cupón Simple", coupon.title);
+                    }
+
+                    if (coupon.cooldownHours) {
+                        coupon.lastRedeemed = Date.now();
+                    } else {
+                        coupon.isRedeemed = true;
+                    }
+
+                    saveState();
+                    renderCoupons();
+                    triggerConfetti();
+                    updateTimers();
+
+                    Swal.fire(
+                        '¡Canjeado!',
+                        'Tu solicitud ha sido enviada con éxito ❤️',
+                        'success'
+                    );
+                }
+            });
+        }
+
+        // ========== TIMERS ==========
+        function updateTimers() {
+            const now = Date.now();
+            coupons.forEach(c => {
+                if (c.cooldownHours && c.lastRedeemed) {
+                    const btn = document.getElementById(`btn-timer-${c.id}`);
+                    if (btn) {
+                        const diff = now - c.lastRedeemed;
+                        const cooldownMs = c.cooldownHours * 3600000;
+                        if (diff < cooldownMs) {
+                            const remaining = cooldownMs - diff;
+                            const h = Math.floor(remaining / 3600000);
+                            const m = Math.floor((remaining % 3600000) / 60000);
+                            const s = Math.floor((remaining % 60000) / 1000);
+                            btn.textContent = `Vuelva a pedir en ${h}h ${m}m ${s}s`;
+                        } else {
+                            if (btn.classList.contains('disabled')) renderCoupons();
+                        }
+                    }
+                }
+            });
+
+            const savedData = localStorage.getItem('dailySurprise');
+            if (savedData) {
+                const parsed = JSON.parse(savedData);
+                const unlockTime = parsed.timestamp + (24 * 60 * 60 * 1000);
+                const diff = unlockTime - now;
+
+                if (diff > 0) {
+                    const h = Math.floor(diff / 3600000);
+                    const m = Math.floor((diff % 3600000) / 60000);
+                    const s = Math.floor((diff % 60000) / 1000);
+                    const timerEl = document.getElementById('timerText');
+                    if (timerEl) {
+                        timerEl.textContent = `${h}h ${m}m ${s}s`;
+                        document.getElementById('surpriseTimer').style.display = 'inline-block';
+                    }
+                } else if (surprise) {
+                    surprise = null;
+                    localStorage.removeItem('dailySurprise');
+                    document.getElementById('surpriseCard').style.display = 'flex';
+                    document.getElementById('surpriseWinner').style.display = 'none';
+                }
+            }
+        }
+
+        function triggerConfetti() {
+            confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#FF69B4', '#FF1493', '#FFFFFF'] });
+        }
+
+        // ========== FUNCIÓN VOLVER AL DASHBOARD (ESTILO MAPA) ==========
+        function backToDashboard() {
+            sessionStorage.setItem('showDashboard', 'true');
+
+            // Crear overlay de salida
+            const zoomOverlay = document.createElement('div');
+            zoomOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,1) 100%);
+                z-index: 9999;
+                opacity: 1;
+                pointer-events: none;
+                backdrop-filter: blur(8px);
+            `;
+            document.body.appendChild(zoomOverlay);
+
+            // Agregar animación CSS
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeOut {
+                    0% { opacity: 1; backdrop-filter: blur(8px); }
+                    100% { opacity: 0; backdrop-filter: blur(0px); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Aplicar la animación
+            zoomOverlay.style.animation = 'fadeOut 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
+
+            // Navegar de vuelta
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1200);
+        }
+    </script>
+</body>
+
+</html>

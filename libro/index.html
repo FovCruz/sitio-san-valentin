@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Introduction Page</title>
+    <style>
+      /* Blink Transition Effect */
+      .blink-transition {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black; /* Change to white if preferred */
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease-in-out;
+        z-index: 9999;
+      }
+
+      /* Active state */
+      .blink-transition.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* General Reset */
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #f984b5, #f5e6c4);
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        color: #fff;
+        text-align: center;
+        flex-direction: column;
+        opacity: 0;
+        animation: fadeInContent 1.2s ease-in forwards;
+      }
+
+      .heart-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      /* Perfect Heart SVG */
+      .heart {
+        width: 120px;
+        height: 120px;
+        fill: #ff4d6d;
+        animation: pulse 1.5s infinite ease-in-out;
+        filter: drop-shadow(0 0 10px #f5e6c4);
+      }
+
+      /* Glow Effect */
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          filter: drop-shadow(0 0 10px #f5e6c4);
+        }
+
+        50% {
+          transform: scale(1.2);
+          filter: drop-shadow(0 0 30px #f5e6c4);
+        }
+      }
+
+      /* Shayari Text Styling */
+      .shayari-text {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #ffebd0;
+        display: inline-block;
+        line-height: 1.5;
+        opacity: 0;
+        animation: fadeInText 1.5s forwards;
+      }
+
+      @keyframes fadeInText {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      /* Animation for words */
+      .word {
+        opacity: 0;
+        display: inline-block;
+        animation: fadeInWord 1.5s forwards;
+      }
+
+      .word:nth-child(1) {
+        animation-delay: 1.5s;
+      }
+
+      .word:nth-child(2) {
+        animation-delay: 3s;
+      }
+
+      /* Button Styling */
+      .propose-btn {
+        background-color: #ff4d6d;
+        border: none;
+        padding: 15px 30px;
+        color: white;
+        font-size: 1.2em;
+        cursor: pointer;
+        border-radius: 25px;
+        transition: background-color 0.3s ease;
+        display: block;
+        margin-top: 30px;
+        opacity: 0;
+        animation: fadeInButtons 1s ease-in forwards;
+      }
+
+      .propose-btn:hover {
+        background-color: #ffffff;
+        color: #f2264b;
+      }
+
+      .buttons-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 30px;
+        flex-wrap: wrap;
+      }
+
+      .buttons-container .propose-btn {
+        margin-top: 0;
+      }
+
+      @keyframes fadeInWord {
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeInButtons {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInContent {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="blink-transition" id="blink"></div>
+
+    <div class="heart-container">
+      <svg
+        class="heart"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+        />
+      </svg>
+
+      <!-- Shayari Text -->
+      <div class="shayari-text">
+        <span class="word">Aqui puedes escribir lo que tu quieras, aparecerá sutilmente por pantalla, todo es personalizable.  </span><br /><br />
+        <span class="word">Puedes Escribir hasta 3 lineas de texto, puedes cambiar desde el fondo, emojis, frases, botones, formas </span><br /><br />
+      </div>
+
+      <!-- Buttons Container -->
+      <div class="buttons-container">
+        <!-- Leer Librito Button -->
+        <button
+          id="proposeButton"
+          class="propose-btn"
+          onclick="window.location.href='book.html'"
+        >
+          Leer Librito ❤
+        </button>
+
+        <!-- Back Button -->
+        <button class="start-btn mb-10" onclick="backToDashboard()" style="
+            background: transparent;
+            border: 2px solid #ff8fa3;
+            color: #ff8fa3;
+            padding: 13px 38px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border-radius: 50px; /* Agregado para que se vea más suave */
+            cursor: pointer;
+        " onmouseover="this.style.background='rgba(255, 143, 163, 0.1)'; this.style.boxShadow='0 0 20px rgba(255, 143, 163, 0.4)';"
+            onmouseout="this.style.background='transparent'; this.style.boxShadow='none';">
+            ← Volver al Menú
+        </button>
+      </div>
+    </div>
+
+<script>
+        // ========== FUNCIÓN VOLVER AL DASHBOARD (ESTILO MAPA) ==========
+        function backToDashboard() {
+            sessionStorage.setItem('showDashboard', 'true');
+
+            // Crear overlay de salida
+            const zoomOverlay = document.createElement('div');
+            zoomOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,1) 100%);
+                z-index: 9999;
+                opacity: 1;
+                pointer-events: none;
+                backdrop-filter: blur(8px);
+            `;
+            document.body.appendChild(zoomOverlay);
+
+            // Agregar animación CSS
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeOut {
+                    0% { opacity: 1; backdrop-filter: blur(8px); }
+                    100% { opacity: 0; backdrop-filter: blur(0px); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Aplicar la animación
+            zoomOverlay.style.animation = 'fadeOut 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
+
+            // Navegar de vuelta
+            setTimeout(() => {
+                window.location.href = '../dashboard.html';
+            }, 1200);
+        }
+</script>
+  </body>
+</html>

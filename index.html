@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Ti Croque ❤️</title>
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffefce;
+            position: relative;
+        }
+
+        /* --- FONDO ANIMADO --- */
+        .animated-background {
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            z-index: -2;
+            background-image: url('assets/fondo.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px) scale(1.05); }
+            50% { transform: translateY(-30px) scale(1.05); }
+            100% { transform: translateY(0px) scale(1.05); }
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        #proposal-screen {
+            text-align: center;
+            z-index: 10;
+            transition: opacity 1s ease; /* [AJUSTE CSS] Suavidad al desaparecer texto */
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gif-container img {
+            width: clamp(100px, 30vw, 150px);
+            height: auto;
+        }
+
+        /* --- TEXTO H1 ADAPTABLE --- */
+        .text-wrapper {
+            min-height: clamp(60px, 15vh, 100px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 6vw, 2rem);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            margin: 0;
+            line-height: 1.2;
+            text-align: center;
+            border-right: 1px solid white;
+            padding-right: 5px;
+            display: inline-block;
+            white-space: normal;
+            max-width: 95%;
+        }
+
+        /* --- FONDO DE PARTÍCULAS --- */
+        canvas#background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* --- BOTONES ADAPTABLES --- */
+        .btn-container {
+            display: flex;
+            gap: clamp(10px, 3vw, 25px);
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 100%;
+            position: relative;
+        }
+
+        .btn {
+            font-size: clamp(0.8rem, 4vw, 1rem);
+            padding: 0.6em 1.2em;
+            border: 1px solid #ffdd6f;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: clamp(120px, 30vw, 180px);
+            color: #ffefce;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            box-shadow: 0 8px 20px rgba(255, 75, 43, 0.4);
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 221, 149, 0.6);
+        }
+
+        .btn-no {
+            background: #ffefce;
+            color: #d63031;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        @media (max-width: 350px) {
+            .btn-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .btn {
+                width: 80%;
+            }
+        }
+
+        /* --- TRANSICIONES (CERRAR OJOS) --- */
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000; /* Fondo negro para efecto cerrar ojos */
+            z-index: 9999;
+            opacity: 0; /* Empieza invisible */
+            pointer-events: none;
+        }
+
+        /* Animación para oscurecer pantalla suavemente */
+        @keyframes pageTransitionIn {
+            0% { 
+                opacity: 0; 
+            }
+            100% { 
+                opacity: 1; /* Termina totalmente negro */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="animated-background"></div>
+    <canvas id="background"></canvas>
+    <audio id="bg-music"></audio>
+
+    <div id="proposal-screen">
+        <div class="gif-container">
+            <img src="assets/pinguino_saltando.gif" alt="Gif de Pinguino">
+        </div>
+
+        <div class="text-wrapper">
+            <h1 id="question"></h1>
+        </div>
+
+        <div class="btn-container">
+            <button class="btn btn-yes" onclick="acceptLove()">¡SÍ, QUIERO! 💖</button>
+            <button class="btn btn-no" id="btn-no" onmouseover="moveButton()">No! 💔</button>
+        </div>
+    </div>
+
+    <div id="page-transition" class="page-transition"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const questionText = "¿Quieres ser mi San Valentín? 💘";
+        const questionElement = document.getElementById("question");
+        let index = 0;
+
+        /* --- LÓGICA DE BOTONES Y EVENTOS --- */
+        const btnNo = document.getElementById('btn-no');
+
+        function moveButton() {
+            const maxWidth = window.innerWidth - btnNo.offsetWidth - 20;
+            const maxHeight = window.innerHeight - btnNo.offsetHeight - 20;
+            const randomX = Math.max(10, Math.random() * maxWidth);
+            const randomY = Math.max(10, Math.random() * maxHeight);
+
+            btnNo.style.position = "fixed";
+            btnNo.style.left = randomX + "px";
+            btnNo.style.top = randomY + "px";
+            btnNo.style.transition = "all 0.3s ease"; 
+        }
+
+        btnNo.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
+
+        /* --- LÓGICA DE ACEPTAR Y TRANSICIÓN --- */
+        function acceptLove() {
+            // 1. Confetti inmediato
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            
+            const proposal = document.getElementById('proposal-screen');
+            const pageTransition = document.getElementById('page-transition');
+
+            // 2. Iniciar Transición Inmediatamente (Sin setTimeout largo)
+            
+            // A. Desvanecer el contenido actual (texto y botones)
+            // [AJUSTE JS] "1s" es la duración del desvanecimiento. 
+            proposal.style.transition = "opacity 1s ease"; 
+            proposal.style.opacity = '0';
+
+            // B. Efecto transicion Pantalla negra)
+            // [AJUSTE JS] "1.5s" es la duración del parpadeo. 
+            // - Menor numero (ej. 0.8s) = Pestañeo rápido
+            // - Mayor numero (ej. 2s) = Se duerme lentamente
+            pageTransition.style.animation = 'pageTransitionIn 1.5s ease-in-out forwards';
+
+            // 3. Redirección final
+            // [AJUSTE JS] Este tiempo (1500) debe coincidir con la duración de arriba (1.5s)
+            // Esto asegura que la página cambie justo cuando todo está negro.
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500); 
+        }
+
+        function typeQuestion() {
+            if (index < questionText.length) {
+                questionElement.textContent += questionText.charAt(index);
+                index++;
+                setTimeout(typeQuestion, 70);
+            } else {
+                questionElement.style.borderRight = "3px solid transparent";
+            }
+        }
+        setTimeout(typeQuestion, 500);
+
+        /* --- CANVAS --- */
+        const canvas = document.getElementById("background");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let particles = [];
+        function createParticle() {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 10 + 5,
+                speedY: Math.random() * 1 + 0.5,
+                opacity: Math.random() * 0.5 + 0.1,
+            };
+        }
+        for (let i = 0; i < 40; i++) particles.push(createParticle());
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let particle of particles) {
+                ctx.fillStyle = `rgba(255, 100, 150, ${particle.opacity})`;
+                ctx.font = `${particle.size}px Arial`;
+                ctx.fillText("❤️", particle.x, particle.y);
+                particle.y -= particle.speedY;
+                if (particle.y < -20) {
+                    particle.y = canvas.height;
+                    particle.x = Math.random() * canvas.width;
+                }
+            }
+            requestAnimationFrame(drawParticles);
+        }
+        drawParticles();
+    </script>
+</body>
+</html>
