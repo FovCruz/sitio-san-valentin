@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nuestro Universo ❤️</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@600&family=Darker+Grotesque:wght@500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@600&family=Darker+Grotesque:wght@500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
@@ -21,15 +23,17 @@
         :root {
             --bg-top: #1B2735;
             --bg-bottom: #090A0F;
-            --accent-pink: #ff4081;
-            /* Colores Románticos y Elegantes para el borde */
             --color-1: #ff75a0;
             --color-2: #8062d6;
             --color-3: #ffffff;
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: "Poppins", sans-serif;
@@ -44,19 +48,74 @@
         }
 
         /* --- 2. FONDO DE ESTRELLAS --- */
-        .star-layer { position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none; background: transparent;}
-        @keyframes animStar { from { transform: translateY(0px); } to { transform: translateY(-2000px); } }
-        #stars { width: 1px; height: 1px; animation: animStar 50s linear infinite; }
-        #stars2 { width: 2px; height: 2px; animation: animStar 100s linear infinite; }
+        .star-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none;
+            background: transparent;
+        }
+
+        @keyframes animStar {
+            from {
+                transform: translateY(0px);
+            }
+
+            to {
+                transform: translateY(-2000px);
+            }
+        }
+
+        #stars {
+            width: 1px;
+            height: 1px;
+            animation: animStar 50s linear infinite;
+        }
+
+        #stars2 {
+            width: 2px;
+            height: 2px;
+            animation: animStar 100s linear infinite;
+        }
 
         /* --- 3. HEADER --- */
-        .header { position: absolute; top: 20px; text-align: center; z-index: 10; width: 100%; pointer-events: none; }
-        .main-title { font-family: 'Dancing Script', cursive; font-size: clamp(2.5rem, 5vw, 4rem); text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
+        .header {
+            position: absolute;
+            top: 20px;
+            text-align: center;
+            z-index: 10;
+            width: 100%;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
 
-        /* --- 4. CARTAS Y EFECTO TURBO --- */
-        .slider-container { perspective: 1500px; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; cursor: grab; z-index: 5; touch-action: none; }
-        .slider-track { transform-style: preserve-3d; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: filter 0.5s ease; }
-        .slider-track.blurred { filter: blur(10px) brightness(0.3); }
+        .main-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- 4. CARRUSEL 3D --- */
+        .slider-container {
+            perspective: 1500px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            touch-action: none;
+        }
+
+        .slider-track {
+            transform-style: preserve-3d;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         .card {
             position: absolute;
@@ -68,28 +127,34 @@
             background-clip: padding-box;
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s ease;
+            cursor: pointer;
+            transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
         }
 
-        /* Solo la carta central o expandida tiene el borde animado */
+        /* Efecto Turbo Borde */
         .card.active-border {
             animation: bg-spin 4s linear infinite;
-            background: 
+            background:
                 linear-gradient(rgba(30, 30, 30, 0.95), rgba(10, 10, 10, 0.95)) padding-box,
                 conic-gradient(from var(--border-angle), transparent 20%, var(--color-1), var(--color-2), var(--color-3), transparent 80%) border-box;
         }
 
-        @keyframes bg-spin { to { --border-angle: 1turn; } }
+        @keyframes bg-spin {
+            to {
+                --border-angle: 1turn;
+            }
+        }
 
         .card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             flex-shrink: 0;
-            transition: height 0.6s ease;
+            transition: height 0.5s ease;
         }
 
-        /* Overlay al Hover (Solo en carrusel) */
+        /* Hover info minimalista */
         .hover-overlay {
             position: absolute;
             inset: 0;
@@ -103,52 +168,118 @@
             z-index: 3;
             backdrop-filter: blur(4px);
         }
-        .card:hover .hover-overlay { opacity: 1; }
-        .hover-overlay h3 { font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--color-1); }
 
-        /* --- 5. INFO ACOPLADA (Dentro de la carta expandida) --- */
+        .card:not(.expanded):hover .hover-overlay {
+            opacity: 1;
+        }
+
+        .hover-overlay h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--color-1);
+        }
+
+        /* --- 5. INFO ACOPLADA --- */
         .card-info {
-            padding: 1.5rem;
+            padding: 1.2rem;
             text-align: center;
-            background: transparent;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
             opacity: 0;
-            display: none;
+            visibility: hidden;
+            height: 0;
+            transition: opacity 0.4s ease, height 0.5s ease;
+            background: rgba(20, 20, 20, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Estado Expandido */
+        /* Estado Expandido (In-Situ) */
         .card.expanded {
-            height: auto !important;
-            z-index: 1000;
+            height: 520px;
+            /* Aumenta para mostrar info */
+            z-index: 50;
+            /* Por encima de las demás pero sin ocultarlas */
         }
-        .card.expanded img { height: 280px; } /* Ajuste de altura imagen */
-        .card.expanded .card-info { display: block; opacity: 1; }
-        .card.expanded .hover-overlay { display: none; }
+
+        .card.expanded img {
+            height: 240px;
+        }
+
+        .card.expanded .card-info {
+            opacity: 1;
+            visibility: visible;
+            height: auto;
+        }
+
+        .card.expanded .hover-overlay {
+            opacity: 0 !important;
+        }
 
         .enter-btn {
             background: linear-gradient(45deg, var(--color-2), var(--color-1));
-            color: white; border: none; padding: 10px 25px; border-radius: 20px;
-            cursor: pointer; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            margin-top: 10px;
         }
 
-        /* --- 6. BOTONES DE NAVEGACIÓN --- */
-        .close-btn { 
-            position: fixed; top: 30px; right: 30px; width: 50px; height: 50px; 
-            background: rgba(255,255,255,0.1); border-radius: 50%; color: white; 
-            border: 1px solid var(--glass-border); cursor: pointer; opacity: 0; 
-            z-index: 1002; transition: 0.3s; display: flex; align-items: center; justify-content: center;
+        /* Botón cerrar integrado */
+        .close-card-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: none;
+            z-index: 10;
+            cursor: pointer;
         }
-        .close-btn.visible { opacity: 1; }
-        .close-btn:hover { background: var(--color-1); transform: rotate(90deg); }
 
-        .restart-btn { position: fixed; bottom: 30px; left: 30px; background: rgba(20,30,50,0.6); color: #fff; width: 45px; height: 45px; border-radius: 50%; border: 1px solid var(--glass-border); cursor: pointer; z-index: 2000; }
-        
-        #transition-overlay { position: fixed; inset: 0; background: #000; opacity: 0; pointer-events: none; z-index: 9999; transition: 0.8s ease; }
+        .card.expanded .close-card-btn {
+            display: block;
+        }
+
+        /* Navegación general */
+        .restart-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(20, 30, 50, 0.6);
+            color: #fff;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            z-index: 2000;
+        }
+
+        #transition-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transition: 0.8s ease;
+        }
 
         @media (max-width: 768px) {
-            .card { width: 220px; height: 320px; }
-            .card.expanded { width: 85vw !important; }
+            .card {
+                width: 200px;
+                height: 300px;
+            }
+
+            .card.expanded {
+                height: 450px;
+            }
         }
     </style>
 </head>
@@ -158,60 +289,128 @@
     <div id="stars2" class="star-layer"></div>
     <div id="transition-overlay"></div>
 
-    <div class="header">
+    <div class="header" id="mainHeader">
         <h1 class="main-title">Nuestros Recuerdos</h1>
     </div>
 
     <div class="slider-container" id="sliderContainer">
         <div class="slider-track" id="sliderTrack">
-            <div class="card" data-title="Nuestra Historia" data-desc="El comienzo de todo... donde nuestra aventura empezó a escribirse." data-link="libro/index.html">
+            <div class="card" data-title="Nuestra Historia" data-desc="Donde nuestra aventura empezó a escribirse."
+                data-link="libro/index.html">
+                <button class="close-card-btn"><i class="fas fa-times"></i></button>
                 <img src="assets/copas.jpg" alt="Historia">
-                <div class="hover-overlay"><h3>Historia</h3><span>Ver más</span></div>
+                <div class="hover-overlay">
+                    <h3>Historia</h3>
+                </div>
+                <div class="card-info">
+                    <h2 style="font-family: 'Dancing Script'; color: var(--color-1); font-size: 1.8rem;">Nuestra
+                        Historia</h2>
+                    <p style="color: #ccc; font-size: 0.85rem; margin: 5px 0;">El comienzo de todo nuestro camino.</p>
+                    <button class="enter-btn">Entrar</button>
+                </div>
             </div>
 
-            <div class="card" data-title="Cupones de Amor" data-desc="Canjeables por besos, abrazos y momentos que no tienen precio." data-link="cuponera-estatica.html">
+            <div class="card" data-title="Cupones" data-desc="Canjeables por besos y momentos especiales."
+                data-link="cuponera-estatica.html">
+                <button class="close-card-btn"><i class="fas fa-times"></i></button>
                 <img src="assets/cuponera.jpg" alt="Cupones">
-                <div class="hover-overlay"><h3>Cupones</h3><span>Canjear</span></div>
+                <div class="hover-overlay">
+                    <h3>Cupones</h3>
+                </div>
+                <div class="card-info">
+                    <h2 style="font-family: 'Dancing Script'; color: var(--color-1); font-size: 1.8rem;">Cupones</h2>
+                    <p style="color: #ccc; font-size: 0.85rem; margin: 5px 0;">Regalos especiales para ti.</p>
+                    <button class="enter-btn">Canjear</button>
+                </div>
             </div>
 
-            <div class="card" data-title="Nuestro Mapa" data-desc="Cada lugar tiene un recuerdo, y cada camino nos lleva a nosotros." data-link="mapa/index.html">
+            <div class="card" data-title="Nuestro Mapa" data-desc="Cada camino nos lleva a nosotros."
+                data-link="mapa/index.html">
+                <button class="close-card-btn"><i class="fas fa-times"></i></button>
                 <img src="assets/mapa.jpg" alt="Mapa">
-                <div class="hover-overlay"><h3>Mapa</h3><span>Explorar</span></div>
+                <div class="hover-overlay">
+                    <h3>Mapa</h3>
+                </div>
+                <div class="card-info">
+                    <h2 style="font-family: 'Dancing Script'; color: var(--color-1); font-size: 1.8rem;">Mapa</h2>
+                    <p style="color: #ccc; font-size: 0.85rem; margin: 5px 0;">Explora nuestros lugares.</p>
+                    <button class="enter-btn">Ver Mapa</button>
+                </div>
             </div>
 
-            <div class="card" data-title="Playlist" data-desc="Las canciones que han marcado el ritmo de nuestro corazón." data-link="playlist/index.html">
-                <img src="assets/musica.jpg" alt="Musica">
-                <div class="hover-overlay"><h3>Música</h3><span>Escuchar</span></div>
+            <div class="card" data-title="Playlist" data-desc="La banda sonora de nuestras vidas."
+                data-link="playlist/index.html">
+                <button class="close-card-btn"><i class="fas fa-times"></i></button>
+                <img src="assets/musica.jpg" alt="Música">
+                <div class="hover-overlay">
+                    <h3>Música</h3>
+                </div>
+                <div class="card-info">
+                    <h2 style="font-family: 'Dancing Script'; color: var(--color-1); font-size: 1.8rem;">Playlist</h2>
+                    <p style="color: #ccc; font-size: 0.85rem; margin: 5px 0;">Nuestras canciones favoritas.</p>
+                    <button class="enter-btn">Escuchar</button>
+                </div>
             </div>
 
-            <div class="card" data-title="Dosis de Ternura" data-desc="Un pequeño rincón lleno de gatitos y amor para alegrar tu día." data-link="sorpresa.html">
-                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&h=800" alt="Sorpresa">
-                <div class="hover-overlay"><h3>Sorpresa</h3><span>Abrir</span></div>
+            <div class="card" data-title="Sorpresa" data-desc="Gatitos y amor para alegrar tu día."
+                data-link="sorpresa.html">
+                <button class="close-card-btn"><i class="fas fa-times"></i></button>
+                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&h=800"
+                    alt="Sorpresa">
+                <div class="hover-overlay">
+                    <h3>Sorpresa</h3>
+                </div>
+                <div class="card-info">
+                    <h2 style="font-family: 'Dancing Script'; color: var(--color-1); font-size: 1.8rem;">Sorpresa</h2>
+                    <p style="color: #ccc; font-size: 0.85rem; margin: 5px 0;">Algo tierno para Mary.</p>
+                    <button class="enter-btn">Abrir</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <button class="close-btn" id="closeBtn"><i class="fas fa-times"></i></button>
-    <button class="restart-btn" onclick="location.reload()" title="Reiniciar"><i class="fas fa-redo"></i></button>
+    <button class="restart-btn" onclick="location.reload()"><i class="fas fa-redo"></i></button>
 
     <script>
-        // Configuración de posiciones en arco
+        // --- 1. CONFIGURACIÓN DE POSICIONES 3D (ARCO) ---
+        // Definimos 5 posiciones fijas para las 5 cartas
         const positions = [
-            { z: 250, rotateY: 0, x: 0, opacity: 1 },
-            { z: 150, rotateY: -30, x: 230, opacity: 0.7 },
-            { z: 50, rotateY: -45, x: 380, opacity: 0.4 },
-            { z: 50, rotateY: 45, x: -380, opacity: 0.4 },
-            { z: 150, rotateY: 30, x: -230, opacity: 0.7 }
+            // Centro
+            { z: 220, rotateY: 0, x: 0, opacity: 1 },
+
+            // Derecha 1
+            { z: 130, rotateY: -20, x: 200, opacity: 0.85 },
+
+            // Derecha 2 (Atrás)
+            { z: 40, rotateY: -35, x: 320, opacity: 0.6 },
+
+            // Izquierda 2 (Atrás)
+            { z: 40, rotateY: 35, x: -320, opacity: 0.6 },
+
+            // Izquierda 1
+            { z: 130, rotateY: 20, x: -200, opacity: 0.85 }
         ];
+        if (window.innerWidth <= 768) {
+            positions[0] = { z: 130, rotateY: 0, x: 0, opacity: 1 };
+
+            positions[1] = { z: 90, rotateY: -15, x: 110, opacity: 0.9 };
+
+            positions[2] = { z: 20, rotateY: -25, x: 170, opacity: 0.6 };
+
+            positions[3] = { z: 20, rotateY: 25, x: -170, opacity: 0.6 };
+
+            positions[4] = { z: 90, rotateY: 15, x: -110, opacity: 0.9 };
+        }
 
         class TurboSlider {
             constructor() {
                 this.track = document.getElementById("sliderTrack");
                 this.cards = Array.from(document.querySelectorAll(".card"));
                 this.container = document.getElementById("sliderContainer");
-                this.closeBtn = document.getElementById("closeBtn");
+                this.header = document.getElementById("mainHeader");
                 this.expandedCard = null;
-                this.clone = null;
+                this.isDragging = false;
+                this.startX = 0;
                 this.init();
             }
 
@@ -223,72 +422,47 @@
             update() {
                 this.cards.forEach((card, i) => {
                     const pos = positions[i];
-                    if (i === 0) card.classList.add('active-border');
-                    else card.classList.remove('active-border');
+
+                    // Solo la central (i=0) tiene borde si no hay ninguna expandida
+                    // O si ella misma es la expandida
+                    if (i === 0 || card === this.expandedCard) {
+                        card.classList.add('active-border');
+                    } else {
+                        card.classList.remove('active-border');
+                    }
 
                     gsap.to(card, {
-                        x: pos.x, z: pos.z, rotationY: pos.rotateY, opacity: pos.opacity,
-                        duration: 0.6, ease: "power2.out"
+                        x: pos.x,
+                        z: pos.z,
+                        rotationY: pos.rotateY,
+                        opacity: pos.opacity,
+                        duration: 0.6,
+                        ease: "power2.out"
                     });
+
                     card.style.pointerEvents = (i === 0 || i === 1 || i === 4) ? "all" : "none";
                 });
             }
 
-            expand(card) {
-                if (this.expandedCard) return;
-                this.expandedCard = card;
+            toggleExpand(card) {
+                if (this.expandedCard && this.expandedCard !== card) {
+                    this.expandedCard.classList.remove("expanded");
+                }
 
-                const rect = card.getBoundingClientRect();
-                const clone = card.cloneNode(true);
-                clone.classList.add("expanded", "active-border");
-
-                // Inyectar la info directamente en el clon para el acople
-                const infoHTML = `
-                    <div class="card-info" style="display: block; opacity: 1;">
-                        <h2 style="font-family: 'Dancing Script'; color: var(--color-1); font-size: 2rem; margin-bottom: 5px;">${card.dataset.title}</h2>
-                        <p style="margin-bottom: 20px; color: #ccc; font-size: 0.95rem; line-height: 1.4;">${card.dataset.desc}</p>
-                        <button class="enter-btn" onclick="document.getElementById('transition-overlay').style.opacity=1; setTimeout(()=>location.href='${card.dataset.link}', 800);">Abrir contenido</button>
-                    </div>
-                `;
-                clone.insertAdjacentHTML('beforeend', infoHTML);
-
-                Object.assign(clone.style, {
-                    position: "fixed", left: rect.left + "px", top: rect.top + "px",
-                    width: rect.width + "px", height: rect.height + "px", transform: "none", zIndex: "1000"
-                });
-
-                document.body.appendChild(clone);
-                this.clone = clone;
-                this.track.classList.add("blurred");
-                card.style.opacity = "0";
-
-                gsap.to(clone, {
-                    width: 350, height: "auto",
-                    left: (window.innerWidth - 350) / 2,
-                    top: (window.innerHeight - 500) / 2,
-                    duration: 0.7, ease: "power3.out",
-                    onComplete: () => this.closeBtn.classList.add("visible")
-                });
-            }
-
-            close() {
-                if (!this.expandedCard) return;
-                this.closeBtn.classList.remove("visible");
-                const rect = this.expandedCard.getBoundingClientRect();
-
-                gsap.to(this.clone, {
-                    width: rect.width, height: rect.height, left: rect.left, top: rect.top,
-                    duration: 0.5, ease: "power2.inOut",
-                    onComplete: () => {
-                        this.clone.remove();
-                        this.expandedCard.style.opacity = "1";
-                        this.track.classList.remove("blurred");
-                        this.expandedCard = null;
-                    }
-                });
+                if (card.classList.contains("expanded")) {
+                    card.classList.remove("expanded");
+                    this.expandedCard = null;
+                    this.header.style.opacity = "1";
+                } else {
+                    card.classList.add("expanded");
+                    this.expandedCard = card;
+                    this.header.style.opacity = "0"; // Oculta título para dar espacio
+                }
+                this.update();
             }
 
             rotate(dir) {
+                if (this.expandedCard) return; // Bloquear rotación si hay una abierta
                 if (dir === "next") this.cards.push(this.cards.shift());
                 else this.cards.unshift(this.cards.pop());
                 this.update();
@@ -296,48 +470,58 @@
 
             bindEvents() {
                 this.cards.forEach(card => {
-                    card.onclick = () => {
+                    const btnEntrar = card.querySelector(".enter-btn");
+                    const btnCerrar = card.querySelector(".close-card-btn");
+
+                    card.onclick = (e) => {
                         const idx = this.cards.indexOf(card);
-                        if (idx === 0) this.expand(card);
-                        else if (idx === 1) this.rotate("next");
+                        if (idx === 0) {
+                            if (!this.expandedCard) this.toggleExpand(card);
+                        } else if (idx === 1) this.rotate("next");
                         else if (idx === 4) this.rotate("prev");
+                    };
+
+                    btnCerrar.onclick = (e) => {
+                        e.stopPropagation();
+                        this.toggleExpand(card);
+                    };
+
+                    btnEntrar.onclick = (e) => {
+                        e.stopPropagation();
+                        document.getElementById('transition-overlay').style.opacity = 1;
+                        setTimeout(() => location.href = card.dataset.link, 800);
                     };
                 });
 
-                this.closeBtn.onclick = () => this.close();
-
-                // Swipe/Drag
-                let startX = 0;
-                this.container.addEventListener('touchstart', e => startX = e.touches[0].clientX);
-                this.container.addEventListener('touchend', e => {
-                    if (this.expandedCard) return;
-                    let diff = e.changedTouches[0].clientX - startX;
+                // Mouse/Touch Drag para rotar
+                this.container.onmousedown = e => { this.startX = e.clientX; this.isDragging = true; };
+                window.onmouseup = e => {
+                    if (!this.isDragging) return;
+                    let diff = e.clientX - this.startX;
                     if (Math.abs(diff) > 50) this.rotate(diff > 0 ? "prev" : "next");
-                });
-                
-                this.container.onmousedown = e => startX = e.clientX;
-                this.container.onmouseup = e => {
-                    if (this.expandedCard) return;
-                    let diff = e.clientX - startX;
+                    this.isDragging = false;
+                };
+
+                this.container.ontouchstart = e => { this.startX = e.touches[0].clientX; };
+                this.container.ontouchend = e => {
+                    let diff = e.changedTouches[0].clientX - this.startX;
                     if (Math.abs(diff) > 50) this.rotate(diff > 0 ? "prev" : "next");
                 };
             }
         }
 
-        // Estrellas Dinámicas
-        const StarSystem = (() => {
-            const generateShadows = (n) => {
-                let value = '';
-                for (let i = 0; i < n; i++) value += `${Math.floor(Math.random() * 2000)}px ${Math.floor(Math.random() * 2000)}px #FFF, `;
-                return value.slice(0, -2);
-            };
-            const s1 = generateShadows(700); const s2 = generateShadows(200);
-            const style = document.createElement("style");
-            style.innerText = `#stars{box-shadow:${s1}}#stars::after{box-shadow:${s1}}#stars2{box-shadow:${s2}}#stars2::after{box-shadow:${s2}}`;
-            document.head.appendChild(style);
+        // Estrellas
+        const s1 = (() => {
+            let val = '';
+            for (let i = 0; i < 700; i++) val += `${Math.floor(Math.random() * 2000)}px ${Math.floor(Math.random() * 2000)}px #FFF, `;
+            return val.slice(0, -2);
         })();
+        const style = document.createElement("style");
+        style.innerText = `#stars{box-shadow:${s1}}#stars::after{box-shadow:${s1}}`;
+        document.head.appendChild(style);
 
         document.addEventListener("DOMContentLoaded", () => new TurboSlider());
     </script>
 </body>
+
 </html>
