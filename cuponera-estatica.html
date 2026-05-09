@@ -18,7 +18,6 @@
     </script>
 
     <style>
-        /* Importando tipografías más delicadas */
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&family=Dancing+Script:wght@600;700&display=swap');
 
         :root {
@@ -37,27 +36,27 @@
             transition: opacity 1.2s ease-in-out;
         }
 
-        /* --- FONDO DE CORAZONES FLOTANTES (FIJO) --- */
+        /* --- FONDO DE CORAZONES DINÁMICOS --- */
         .area {
             background: linear-gradient(to bottom, #fff5f7, #fce4ec);
             width: 100%; height: 100vh; position: fixed; top: 0; left: 0; z-index: -1;
         }
 
-        .circles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; margin: 0; padding: 0; }
-        .circles li { 
-            position: absolute; display: block; list-style: none; width: 20px; height: 20px; 
-            background: rgba(255, 255, 255, 0.4); animation: animate 20s linear infinite; 
-            bottom: -150px; font-size: 24px; opacity: 0; 
+        .circles { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            overflow: hidden; margin: 0; padding: 0; 
         }
-        .circles li:nth-child(1) { left: 25%; animation-delay: 0s; }
-        .circles li:nth-child(2) { left: 10%; animation-delay: 2s; animation-duration: 12s; }
-        .circles li:nth-child(3) { left: 70%; animation-delay: 4s; }
-        .circles li:nth-child(4) { left: 40%; animation-delay: 0s; animation-duration: 18s; }
-        .circles li:nth-child(5) { left: 85%; animation-delay: 1s; animation-duration: 15s; }
+
+        .circles li { 
+            position: absolute; display: block; list-style: none; 
+            bottom: -150px; opacity: 0; 
+            animation: animate float linear infinite; 
+        }
 
         @keyframes animate {
             0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            20% { opacity: 1; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
             100% { transform: translateY(-1200px) rotate(720deg); opacity: 0; }
         }
 
@@ -68,7 +67,7 @@
             color: #5a4a4d;
         }
 
-        /* --- CARDS MINIMALISTAS --- */
+        /* --- CARDS GLASSMORPHISM --- */
         .card {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(10px);
@@ -76,7 +75,7 @@
             padding: 30px;
             box-shadow: 0 10px 25px rgba(255, 143, 163, 0.1);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 2px dashed #4caf50;
             text-align: center;
             display: flex; flex-direction: column; justify-content: space-between;
             min-height: 380px;
@@ -86,6 +85,7 @@
             transform: translateY(-10px);
             background: rgba(255, 255, 255, 0.9);
             box-shadow: 0 15px 35px rgba(255, 143, 163, 0.2);
+            border-style: solid;
         }
 
         .stamp-redeemed {
@@ -100,7 +100,6 @@
             display: inline-block;
             transform: rotate(-10deg);
             margin-top: 15px;
-            opacity: 0.8;
         }
 
         .btn-action {
@@ -117,27 +116,19 @@
             font-size: 0.9rem;
             letter-spacing: 0.5px;
         }
-        .btn-action:hover { filter: brightness(1.05); transform: scale(1.02); }
 
         /* --- INPUT COMODÍN --- */
         .wish-input {
-            width: 100%;
-            padding: 12px;
-            border: 1.5px solid #ffccd5;
-            border-radius: 12px;
-            margin-top: 15px;
-            font-size: 0.85rem;
-            text-align: center;
-            outline: none;
-            background: rgba(255, 255, 255, 0.5);
-            font-family: 'Quicksand', sans-serif;
+            width: 100%; padding: 12px; border: 1.5px solid #ffccd5;
+            border-radius: 12px; margin-top: 15px; font-size: 0.85rem;
+            text-align: center; outline: none; background: rgba(255, 255, 255, 0.5);
         }
 
         /* --- BOTÓN REINICIAR (PEEK) --- */
         .corner-drawer-left {
             position: fixed; bottom: 30px; left: 0; z-index: 2000;
             display: flex; align-items: center;
-            transform: translateX(-76%);
+            transform: translateX(-78%);
             transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
             background: var(--accent-gradient);
             border-radius: 0 50px 50px 0;
@@ -159,9 +150,8 @@
     <div id="transition-overlay"></div>
 
     <div class="area">
-        <ul class="circles">
-            <li>❤️</li><li>🌸</li><li>✨</li><li>💖</li><li>❤️</li><li>💕</li>
-        </ul>
+        <ul class="circles" id="heart-container">
+            </ul>
     </div>
 
     <div class="corner-drawer-left" onclick="backToDashboard()">
@@ -172,19 +162,22 @@
     <div class="container mx-auto px-4 py-12 relative z-10">
         <header class="text-center mb-16">
             <h1 class="text-5xl font-bold text-pink-500 mb-4">Feliz 14 de Febrero ❤️</h1>
-            <p class="text-pink-400 font-medium text-xl italic max-w-lg mx-auto">
-                Una cuponera mágica creada solo para ti, <br> para coleccionar momentos juntos.
+            <p class="text-pink-400 font-medium text-xl italic max-w-lg mx-auto leading-relaxed">
+                Te regalo una cuponera para que puedas canjear cuando quieras...
+                <br>
             </p>
+            <br>
+            Al elegir cualquier cupon y hacer clic en "Canjear", me llegará una notificación para que prepare tu sorpresa ❤️
         </header>
 
         <div class="surprise-container mb-12 max-w-sm mx-auto">
-            <div id="surpriseCard" class="card surprise-card" onclick="openSurprise()" style="cursor:pointer; min-height: 180px;">
+            <div id="surpriseCard" class="card surprise-card" onclick="openSurprise()" style="cursor:pointer; min-height: 180px; border-color: #ff8fa3;">
                 <div class="text-6xl mb-4">🎁</div>
                 <h3 class="text-xl font-bold text-pink-700">Tu Regalo Sorpresa</h3>
                 <p class="text-sm opacity-80">Haz clic para descubrir tu detalle de hoy.</p>
             </div>
 
-            <div id="surpriseWinner" class="card winner" style="display: none; min-height: 200px;">
+            <div id="surpriseWinner" class="card winner" style="display: none; min-height: 200px; border-color: #4caf50;">
                 <div class="h-44 w-full overflow-hidden rounded-2xl mb-4 bg-pink-50">
                     <img id="gifImg" src="" class="w-full h-full object-cover">
                 </div>
@@ -204,10 +197,40 @@
         const EMAILJS_TEMPLATE_ID = "template_bztji77";
         const ADMIN_EMAIL = "fov.cruz@gmail.com";
 
+        // --- GENERADOR DE CORAZONES ---
+        function generateHearts() {
+            const container = document.getElementById('heart-container');
+            const heartCount = 50; // Cantidad de corazones
+            const hearts = ['❤️', '💖', '💕', '💗', '🌸', '✨'];
+
+            for (let i = 0; i < heartCount; i++) {
+                const li = document.createElement('li');
+                const randomHeart = hearts[Math.floor(Math.random() * hearts.length)];
+                li.innerHTML = `<span>${randomHeart}</span>`;
+
+                // Posición horizontal aleatoria
+                li.style.left = Math.random() * 100 + '%';
+                
+                // Tamaño aleatorio entre 15px y 40px
+                const size = Math.floor(Math.random() * 25) + 15 + 'px';
+                li.style.width = size;
+                li.style.height = size;
+                li.style.fontSize = size;
+
+                // Retraso aleatorio para que no salgan todos a la vez
+                li.style.animationDelay = Math.random() * 20 + 's';
+                
+                // Velocidad aleatoria (Más rápidos: entre 7s y 15s)
+                li.style.animationDuration = (Math.random() * 8 + 7) + 's';
+
+                container.appendChild(li);
+            }
+        }
+
         const SURPRISE_POOL = [
-            { text: 'Una cena preparada por mí 🍽️', gif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR/3o7TKSj0EYWpQ2J7J6/giphy.gif' },
-            { text: 'Una sesión de masajes relajantes 💆‍♀️', gif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR/l2Je3qSgOfhOXvpq8/giphy.gif' },
-            { text: 'Noche de cine y palomitas 🎬', gif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR4ZzR/26AHG5KGFxSkQLB0Q/giphy.gif' }
+            { text: 'Una cena preparada por mí 🍽️', gif: 'https://media.giphy.com/media/3o7TKSj0EYWpQ2J7J6/giphy.gif' },
+            { text: 'Una sesión de masajes relajantes 💆‍♀️', gif: 'https://media.giphy.com/media/l2Je3qSgOfhOXvpq8/giphy.gif' },
+            { text: 'Noche de cine y palomitas 🎬', gif: 'https://media.giphy.com/media/26AHG5KGFxSkQLB0Q/giphy.gif' }
         ];
 
         const INITIAL_COUPONS = [
@@ -222,6 +245,7 @@
         let coupons = [];
 
         document.addEventListener('DOMContentLoaded', () => {
+            generateHearts();
             setTimeout(() => document.getElementById('transition-overlay').style.opacity = '0', 300);
             loadState();
             renderCoupons();
@@ -241,7 +265,6 @@
             const saved = localStorage.getItem('loveCoupons');
             if (saved) {
                 let parsed = JSON.parse(saved);
-                // Forzar actualización si faltan cupones nuevos
                 if (parsed.length < INITIAL_COUPONS.length) {
                     const existingIds = parsed.map(c => c.id);
                     const missing = INITIAL_COUPONS.filter(c => !existingIds.includes(c.id));
@@ -302,10 +325,8 @@
                 text: `"${c.title}"`,
                 showCancelButton: true,
                 confirmButtonColor: '#ff8fa3',
-                cancelButtonColor: '#ffccd5',
                 confirmButtonText: '¡Sí, quiero!',
-                cancelButtonText: 'Ahora no',
-                background: '#fff'
+                cancelButtonText: 'Ahora no'
             }).then((res) => {
                 if(res.isConfirmed) {
                     c.isRedeemed = true;
@@ -317,14 +338,6 @@
                     Swal.fire({ title: '¡Listo!', text: 'Notificación enviada a Fabián ❤️', icon: 'success', confirmButtonColor: '#ff8fa3' });
                 }
             });
-        }
-
-        function checkDailySurprise() {
-            const saved = localStorage.getItem('dailySurprise');
-            if(saved) {
-                const data = JSON.parse(saved);
-                if(Date.now() - data.timestamp < 86400000) showWinner(data.surprise);
-            }
         }
 
         function openSurprise() {
@@ -340,6 +353,14 @@
             document.getElementById('surpriseWinner').style.display = 'flex';
             document.getElementById('prizeText').textContent = win.text;
             document.getElementById('gifImg').src = win.gif;
+        }
+
+        function checkDailySurprise() {
+            const saved = localStorage.getItem('dailySurprise');
+            if(saved) {
+                const data = JSON.parse(saved);
+                if(Date.now() - data.timestamp < 86400000) showWinner(data.surprise);
+            }
         }
 
         function updateTimers() {

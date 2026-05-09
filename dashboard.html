@@ -109,76 +109,63 @@
 
         /* --- BOTONES ESQUINA (DRAWERS) --- */
         
-        /* Contenedor Botón Izquierdo (Reiniciar) */
-        .corner-drawer-left {
-            position: fixed; bottom: 30px; left: 0; 
-            z-index: 2000; display: flex; align-items: center;
-            transform: translateX(-65%); /* Escondido 3/4 */
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: var(--accent-gradient);
-            border-radius: 0 50px 50px 0; /* Borde redondeado solo a la derecha */
-            padding: 10px 20px 10px 15px;
-            box-shadow: 5px 5px 20px rgba(0,0,0,0.4);
-            cursor: pointer;
+        /* --- BOTONES FLOTANTES (UI/UX MEJORADO) --- */
+        .fab-btn {
+            position: fixed; bottom: 30px; height: 60px;
+            background: var(--accent-gradient); border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 2000;
+            display: flex; align-items: center; overflow: hidden;
+            cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .corner-drawer-left:hover, .corner-drawer-left.active { transform: translateX(0); }
+
+        /* FAB Izquierdo: Reiniciar */
+        .fab-left { left: 20px; width: 60px; justify-content: flex-start; }
+        .fab-left.active { width: 150px; }
+        .fab-left .fab-icon { min-width: 60px; text-align: center; font-size: 1.4rem; color: white; }
+        .fab-left .fab-text { color: white; font-weight: 600; font-size: 1rem; opacity: 0; transition: 0.3s; white-space: nowrap; }
+        .fab-left.active .fab-text { opacity: 1; }
+
+        /* FAB Derecho: Música */
+        .fab-right { right: 20px; width: 60px; justify-content: flex-end; }
+        .fab-right .fab-icon { min-width: 60px; text-align: center; font-size: 1.4rem; color: white; transition: 0.3s; }
         
-        .cd-icon { font-size: 1.5rem; color: white; margin-right: 15px; min-width: 30px; text-align: center; }
-        .cd-text { color: white; font-weight: 600; white-space: nowrap; font-size: 1rem; opacity: 0.5; transition: 0.3s; }
-        .corner-drawer-left:hover .cd-text, .corner-drawer-left.active .cd-text { opacity: 1; }
-
-
-        /* Contenedor Botón Derecho (Música) */
-        .corner-drawer-right {
-            position: fixed; bottom: 30px; right: 0;
-            z-index: 2000;
-            transform: translateX(65%); /* Escondido 3/4 */
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: var(--accent-gradient);
-            border-radius: 50px 0 0 50px;
-            padding: 15px;
-            box-shadow: -5px 5px 20px rgba(0,0,0,0.4);
-            display: flex; align-items: center; justify-content: flex-start;
-            width: 70px; height: 60px; /* Tamaño inicial pequeño */
-            overflow: hidden; cursor: pointer;
+        .fab-right.active {
+            width: 320px; height: 140px; border-radius: 24px;
+            background: var(--glass-bg); backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border); justify-content: center; align-items: center;
         }
+        .fab-right.active .fab-icon { display: none; }
 
-        .corner-drawer-right.active {
-            transform: translateX(0);
-            width: 320px; /* Se expande */
-            height: 160px; /* Se hace más alto para el player */
-            border-radius: 20px 0 0 20px;
-            background: var(--glass-bg); /* Cambia a glass al abrir */
-            border-left: 1px solid var(--glass-border);
-            border-top: 1px solid var(--glass-border);
-            align-items: flex-start; flex-direction: column;
-        }
-
-        .music-icon { 
-            position: absolute; left: 18px; top: 15px; 
-            font-size: 1.5rem; color: white; transition: 0.3s; 
-        }
-        .corner-drawer-right.active .music-icon { opacity: 0; pointer-events: none; } /* Ocultar icono al abrir */
-
-        /* Contenido del Player (Oculto hasta expandir) */
+        /* Contenido del Player */
         .player-content {
-            opacity: 0; width: 100%; transition: 0.3s; pointer-events: none; transform: translateY(10px);
+            opacity: 0; width: 100%; padding: 15px 20px; pointer-events: none;
+            display: none; flex-direction: column; justify-content: center;
         }
-        .corner-drawer-right.active .player-content { 
-            opacity: 1; pointer-events: all; transform: translateY(0); transition-delay: 0.2s; 
-        }
-
-        /* Estilos Player Interno */
-        .p-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 10px; }
-        .p-title { font-size: 1.1rem; font-weight: 700; color: #ff4081; white-space: nowrap; }
-        .p-close { font-size: 1.2rem; cursor: pointer; padding: 5px; }
+        .fab-right.active .player-content { opacity: 1; pointer-events: all; display: flex; animation: fadeIn 0.5s 0.2s forwards; }
         
-        .p-controls { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 10px; }
-        .p-btn { font-size: 1.8rem; cursor: pointer; color: white; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .p-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px; }
+        .p-title { font-size: 1rem; font-weight: 600; color: #ff4081; white-space: nowrap; }
+        .p-close { font-size: 1.2rem; cursor: pointer; padding: 5px; color: #aaa; transition: color 0.2s; }
+        .p-close:hover { color: white; }
+        
+        .p-controls { display: flex; align-items: center; justify-content: center; gap: 25px; margin-top: 10px; }
+        .p-btn { font-size: 1.8rem; cursor: pointer; color: white; transition: transform 0.2s; }
+        .p-btn:active { transform: scale(0.8); }
         
         .wave-mini svg path { fill: url(#PSgrad_0); animation: 4s infinite; }
         @keyframes morph { 0%,100%{d:path('M299,15 L0,15 L0,6 C12,9 21,10 26,10 C34,10 47,2 57,2 C67,2 71,7 81,7 C91,7 95,0 104,0 C112,0 118,13 129,13 C140,13 138,7 146,7 C154,7 160,10 170,10 C181,10 184,2 192,2 C201,2 209,8 217,8 C225,8 236,4 243,4 C250,4 264,12 272,12 C276,12 286,10 299,6 L299,15 Z')} 50%{d:path('M299,15 L0,15 L0,5 C9,3 17,2 22,2 C30,2 35,9 45,9 C55,9 60,6 70,6 C80,6 94,0 102,0 C111,0 115,7 126,7 C137,7 137,4 148,4 C159,4 163,11 174,11 C185,11 187,0 197,0 C207,0 216,5 224,5 C232,5 236,2 244,2 C252,2 258,11 266,11 C273,11 288,3 299,3 L299,15 Z')} }
 
+        #transition-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; opacity:0; pointer-events:none; z-index:9999; transition: opacity 1s; }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            .fab-right.active { 
+                /* En móvil, el player toma todo el ancho inferior para ser más cómodo */
+                width: calc(100% - 40px); left: 20px; right: 20px; bottom: 20px;
+            }
+        }
 
         /* OVERLAY ZOOM */
         #transition-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; opacity:0; pointer-events:none; z-index:9999; transition: opacity 1s; }
@@ -209,7 +196,7 @@
     <div id="transition-overlay"></div>
 
     <div class="header">
-        <h1 class="main-title">Nuestros Recuerdos</h1>
+        <h1 class="main-title">Feliz Cumple! Elija su primer regalito</h1>
     </div>
 
     <div class="slider-container" id="sliderContainer">
@@ -237,25 +224,26 @@
         </div>
     </div>
 
-    <div class="corner-drawer-left" id="restartDrawer">
-        <i class="fas fa-redo cd-icon"></i>
-        <span class="cd-text">Reiniciar</span>
+    <div class="fab-btn fab-left" id="restartDrawer">
+        <i class="fas fa-redo fab-icon"></i>
+        <span class="fab-text">Reiniciar</span>
     </div>
 
-    <div class="corner-drawer-right" id="musicDrawer">
-        <i class="fas fa-music music-icon"></i>
+        
+    <div class="fab-btn fab-right" id="musicDrawer">
+        <i class="fas fa-music fab-icon"></i>
         
         <div class="player-content">
             <div class="p-header">
                 <span class="p-title">🎵 Nuestra Canción</span>
-                <i class="fas fa-chevron-down p-close" id="closePlayer"></i>
+                <i class="fas fa-times p-close" id="closePlayer"></i>
             </div>
             
             <div class="wave-mini">
                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="20" viewBox="0 0 299 15" preserveAspectRatio="none">
                     <linearGradient id="PSgrad_0" x1="70%" x2="0%" y1="70%" y2="0%">
-                        <stop offset="0%" stop-color="rgb(104,104,213)" stop-opacity="1" />
-                        <stop offset="100%" stop-color="rgb(240,240,252)" stop-opacity="1" />
+                        <stop offset="0%" stop-color="#ff4081" stop-opacity="1" />
+                        <stop offset="100%" stop-color="#ffffff" stop-opacity="1" />
                     </linearGradient>
                     <path fill="url(#PSgrad_0)"/>
                 </svg>
@@ -263,12 +251,13 @@
 
             <div class="p-controls">
                 <i class="fas fa-backward p-btn" onclick="document.getElementById('audio-track').currentTime -= 10"></i>
-                <i id="playBtn" class="fas fa-play p-btn"></i>
-                <i id="pauseBtn" class="fas fa-pause p-btn" style="display:none"></i>
+                <i id="playBtn" class="fas fa-play-circle p-btn" style="font-size: 2.2rem;"></i>
+                <i id="pauseBtn" class="fas fa-pause-circle p-btn" style="font-size: 2.2rem; display:none"></i>
                 <i class="fas fa-forward p-btn" onclick="document.getElementById('audio-track').currentTime += 10"></i>
             </div>
             <audio id="audio-track" src="https://api.podcache.net/episodes/d748b852-11d6-4f25-9295-c314e0c8ad04/stream.mp3" preload="metadata"></audio>
         </div>
+    </div>
     </div>
 
     <script>
@@ -453,27 +442,25 @@
             }
         }
 
-        // --- 3. GESTIÓN BOTONES ESQUINA ---
+        // --- 3. GESTIÓN BOTONES FLOTANTES (FABs) ---
         const initDrawers = () => {
             const restart = document.getElementById('restartDrawer');
             const music = document.getElementById('musicDrawer');
             const closeP = document.getElementById('closePlayer');
 
-            // Reiniciar Logic
+            // Lógica Reiniciar
             restart.addEventListener('click', () => {
                 if (restart.classList.contains('active')) {
                     NavigationManager.restart('index.html');
                 } else {
                     restart.classList.add('active');
-                    // Auto cerrar si no confirman
                     setTimeout(() => restart.classList.remove('active'), 3000);
                 }
             });
 
-            // Music Logic
+            // Lógica Música
             music.addEventListener('click', (e) => {
-                // Evitar cerrar si se hace click en controles
-                if (e.target.closest('.p-btn')) return;
+                if (e.target.closest('.player-content')) return; // No cerrar si clickeas adentro
                 music.classList.add('active');
             });
 
@@ -483,7 +470,7 @@
             });
         };
 
-        // --- 4. PLAYER LOGIC ---
+        // --- 4. LOGICA PLAYER ---
         const initPlayer = () => {
             const track = document.getElementById('audio-track');
             const play = document.getElementById('playBtn');
@@ -515,7 +502,7 @@
                         sessionStorage.setItem('returningFromSection', 'true');
                         window.location.href = url; 
                     }, 800);
-                },
+                },  
                 restart: (url) => {
                     overlay.style.opacity = 1;
                     setTimeout(() => window.location.href = url, 500);
