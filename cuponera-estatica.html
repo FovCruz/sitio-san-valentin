@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cuponera de Croque ❤️</title>
+    <title>Cuponera de Mary ❤️</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.min.js"></script>
@@ -13,224 +13,273 @@
 
     <script type="text/javascript">
         (function () {
+            // Inicialización de tu cuenta EmailJS
             emailjs.init("Wa5ifEqnS-Rath25z");
         })();
     </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&family=Dancing+Script:wght@600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@700&display=swap');
 
         :root {
-            --accent-gradient: linear-gradient(135deg, #a7a7ff, #ff8fa3);
-            --romantic-pink: #ff8fa3;
+            --accent-gradient: linear-gradient(135deg, #ff4081, #8e44ad);
+            --bg-top: #fff5f7;
+            --bg-bottom: #fce4ec;
+            --text-main: #5a4a4d;
         }
 
-        /* --- EFECTO DE CARGA (PARPADEO) --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            min-height: 100vh; 
+            background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+            color: var(--text-main);
+            overflow-x: hidden;
+            padding-bottom: 100px; /* Espacio inferior para el botón flotante */
+        }
+
+        /* --- EFECTO DE CARGA --- */
         #transition-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            z-index: 9999;
-            opacity: 1;
-            pointer-events: none;
-            transition: opacity 1.2s ease-in-out;
+            background: #000; z-index: 9999; opacity: 1; pointer-events: none;
+            transition: opacity 1s ease-in-out;
         }
 
-        /* --- FONDO DE CORAZONES DINÁMICOS --- */
-        .area {
-            background: linear-gradient(to bottom, #fff5f7, #fce4ec);
-            width: 100%; height: 100vh; position: fixed; top: 0; left: 0; z-index: -1;
-        }
-
+        /* --- FONDO DE CORAZONES DINÁMICOS (Distribución mejorada) --- */
         .circles { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            overflow: hidden; margin: 0; padding: 0; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            overflow: hidden; margin: 0; padding: 0; z-index: -1;
+            pointer-events: none;
         }
 
         .circles li { 
             position: absolute; display: block; list-style: none; 
             bottom: -150px; opacity: 0; 
-            animation: animate float linear infinite; 
+            animation: floatUp linear infinite; 
         }
 
-        @keyframes animate {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+        /* Animación usando vh para cubrir todo el alto de la pantalla uniformemente */
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
             10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(-1200px) rotate(720deg); opacity: 0; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-150vh) rotate(720deg) scale(1.2); opacity: 0; }
         }
 
-        body { 
-            font-family: 'Quicksand', sans-serif; 
-            min-height: 100vh; 
-            background-color: #fff5f7; 
-            color: #5a4a4d;
-        }
+        /* --- TÍTULOS --- */
+        .main-title { font-family: 'Dancing Script', cursive; text-shadow: 0 2px 10px rgba(255, 64, 129, 0.2); }
 
-        /* --- CARDS GLASSMORPHISM --- */
+        /* --- CARDS GLASSMORPHISM CON BORDE PUNTEADO --- */
         .card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
             border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(255, 143, 163, 0.1);
+            padding: 30px 20px;
+            box-shadow: 0 10px 30px rgba(255, 64, 129, 0.08);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 2px dashed #4caf50;
+            /* Borde punteado por defecto */
+            border: 2px dashed #ffb6c1; 
             text-align: center;
             display: flex; flex-direction: column; justify-content: space-between;
-            min-height: 380px;
+            min-height: 360px;
         }
 
+        /* Hover con borde verde lineal */
         .card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 15px 35px rgba(255, 143, 163, 0.2);
-            border-style: solid;
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 15px 35px rgba(76, 175, 80, 0.2);
+            /* Borde verde solido al pasar el mouse */
+            border: 2px solid #4caf50; 
+        }
+
+        /* Tarjeta especial para sorpresa (hereda el hover verde pero empieza con otro color) */
+        .surprise-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 240, 245, 0.9));
+            border: 2px dashed #ff4081;
         }
 
         .stamp-redeemed {
             font-family: 'Dancing Script', cursive;
-            color: #ff5c7c;
-            border: 2px solid #ff5c7c;
-            padding: 4px 12px;
-            border-radius: 8px;
+            color: #d1d5db; 
+            border: 3px solid #d1d5db;
+            padding: 5px 15px;
+            border-radius: 12px;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             display: inline-block;
-            transform: rotate(-10deg);
+            transform: rotate(-15deg);
             margin-top: 15px;
+            box-shadow: inset 0 0 10px rgba(209, 213, 219, 0.2);
         }
 
         .btn-action {
             display: inline-block;
-            padding: 12px 24px;
-            background: var(--romantic-pink);
+            padding: 14px 24px;
+            background: var(--accent-gradient);
             color: white;
-            border-radius: 14px;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
             width: 100%;
             border: none;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             letter-spacing: 0.5px;
+            box-shadow: 0 5px 15px rgba(255, 64, 129, 0.3);
         }
+
+        .btn-action:active { transform: scale(0.95); box-shadow: 0 2px 10px rgba(255, 64, 129, 0.3); }
 
         /* --- INPUT COMODÍN --- */
         .wish-input {
-            width: 100%; padding: 12px; border: 1.5px solid #ffccd5;
-            border-radius: 12px; margin-top: 15px; font-size: 0.85rem;
-            text-align: center; outline: none; background: rgba(255, 255, 255, 0.5);
+            width: 100%; padding: 14px; border: 1.5px dashed #ffccd5;
+            border-radius: 16px; margin-top: 10px; font-size: 0.9rem;
+            text-align: center; outline: none; background: rgba(255, 255, 255, 0.8);
+            font-family: 'Poppins', sans-serif; transition: border-color 0.3s;
+        }
+        .wish-input:focus { border: 1.5px solid #4caf50; } /* Se pone verde al escribir */
+
+        .wish-locked {
+            font-size: 0.85rem; color: #6b7280; font-style: italic; margin-bottom: 10px;
+            background: rgba(255,255,255,0.5); padding: 8px; border-radius: 10px;
         }
 
-        /* --- BOTÓN REINICIAR (PEEK) --- */
-        .corner-drawer-left {
-            position: fixed; bottom: 30px; left: 0; z-index: 2000;
-            display: flex; align-items: center;
-            transform: translateX(-78%);
-            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            background: var(--accent-gradient);
-            border-radius: 0 50px 50px 0;
-            padding: 14px 28px 14px 18px;
-            box-shadow: 5px 5px 25px rgba(104, 104, 213, 0.2);
-            cursor: pointer;
+        /* --- BOTÓN VOLVER FLOTANTE --- */
+        .fab-btn {
+            position: fixed; bottom: 30px; left: 20px; height: 60px;
+            background: var(--accent-gradient); border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 2000;
+            display: flex; align-items: center; overflow: hidden;
+            cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 60px; justify-content: flex-start;
         }
-        .corner-drawer-left:hover { transform: translateX(0); }
-        .cd-icon { font-size: 1.4rem; color: white; margin-left: auto; min-width: 35px; }
-        .cd-text { color: white; font-weight: 600; white-space: nowrap; opacity: 0; transition: 0.3s; margin-right: 12px; font-size: 0.95rem; }
-        .corner-drawer-left:hover .cd-text { opacity: 1; }
+        .fab-btn:hover { width: 140px; }
+        .fab-icon { min-width: 60px; text-align: center; font-size: 1.4rem; color: white; }
+        .fab-text { color: white; font-weight: 600; font-size: 1rem; opacity: 0; transition: 0.3s; white-space: nowrap; }
+        .fab-btn:hover .fab-text { opacity: 1; }
 
-        h1 { font-family: 'Dancing Script', cursive; }
+        @media (max-width: 640px) {
+            .card { min-height: 320px; padding: 25px 15px; }
+            .header-text { font-size: 1.1rem; }
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
 
     <div id="transition-overlay"></div>
 
-    <div class="area">
-        <ul class="circles" id="heart-container">
-            </ul>
+    <ul class="circles" id="heart-container"></ul>
+
+    <div class="fab-btn" onclick="backToDashboard()">
+        <i class="fas fa-arrow-left fab-icon"></i>
+        <span class="fab-text">Volver</span>
     </div>
 
-    <div class="corner-drawer-left" onclick="backToDashboard()">
-        <span class="cd-text">Reiniciar</span>
-        <i class="fas fa-redo cd-icon"></i>
-    </div>
-
-    <div class="container mx-auto px-4 py-12 relative z-10">
-        <header class="text-center mb-16">
-            <h1 class="text-5xl font-bold text-pink-500 mb-4">Feliz 14 de Febrero ❤️</h1>
-            <p class="text-pink-400 font-medium text-xl italic max-w-lg mx-auto leading-relaxed">
-                Te regalo una cuponera para que puedas canjear cuando quieras...
-                <br>
+    <div class="container mx-auto px-4 py-12 relative z-10 max-w-6xl">
+        <header class="text-center mb-12">
+            <h1 id="secretResetTitle" class="main-title text-5xl md:text-6xl text-pink-500 mb-4 select-none">Feliz cumpleaños mi princesa! ❤️</h1>
+            <p class="text-pink-400 font-medium text-lg md:text-xl italic max-w-2xl mx-auto leading-relaxed px-4 header-text">
+                Te regalo esta cuponera mágica. Úsala cuando quieras...
+                <br><br>
+                <span class="text-sm text-gray-500 not-italic">Al elegir cualquier cupón y hacer clic en "Canjear", me llegará una notificación inmediata para prepararlo.</span>
             </p>
-            <br>
-            Al elegir cualquier cupon y hacer clic en "Canjear", me llegará una notificación para que prepare tu sorpresa ❤️
         </header>
 
-        <div class="surprise-container mb-12 max-w-sm mx-auto">
-            <div id="surpriseCard" class="card surprise-card" onclick="openSurprise()" style="cursor:pointer; min-height: 180px; border-color: #ff8fa3;">
-                <div class="text-6xl mb-4">🎁</div>
-                <h3 class="text-xl font-bold text-pink-700">Tu Regalo Sorpresa</h3>
-                <p class="text-sm opacity-80">Haz clic para descubrir tu detalle de hoy.</p>
+        <div class="mb-14 max-w-md mx-auto">
+            <div id="surpriseCard" class="card surprise-card" onclick="openSurprise()" style="cursor:pointer; min-height: 200px;">
+                <div class="text-6xl mb-2 mt-4 animate-bounce">🎁</div>
+                <h3 class="text-2xl font-bold text-pink-600">Tu Sorpresa Diaria</h3>
+                <p class="text-sm text-gray-500 mt-2">Haz clic para abrir tu regalo de hoy.</p>
             </div>
 
-            <div id="surpriseWinner" class="card winner" style="display: none; min-height: 200px; border-color: #4caf50;">
-                <div class="h-44 w-full overflow-hidden rounded-2xl mb-4 bg-pink-50">
+            <div id="surpriseWinner" class="card" style="display: none; min-height: 250px; border: 2px solid #4caf50;">
+                <div class="h-48 w-full overflow-hidden rounded-2xl mb-4 bg-gray-100">
                     <img id="gifImg" src="" class="w-full h-full object-cover">
                 </div>
-                <h3 class="text-pink-600 font-bold text-lg italic">¡Te has ganado!</h3>
-                <h2 id="prizeText" class="text-xl font-bold text-gray-700 my-2"></h2>
-                <div id="surpriseTimer" class="mt-4 text-xs font-bold text-pink-300" style="display:none">
+                <h3 class="text-pink-500 font-bold text-lg italic">¡Te has ganado!</h3>
+                <h2 id="prizeText" class="text-xl font-bold text-gray-800 my-2"></h2>
+                <div id="surpriseTimer" class="mt-4 text-sm font-bold text-pink-400 bg-pink-50 py-2 rounded-lg" style="display:none">
                     Próximo regalo en: <span id="timerText"></span>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="couponsGrid"></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="couponsGrid"></div>
     </div>
 
     <script>
-        const EMAILJS_SERVICE_ID = "service_9vjfwhl";
+        // CONFIGURACIÓN EMAILJS
+        const EMAILJS_SERVICE_ID = "service_m32mxit";
         const EMAILJS_TEMPLATE_ID = "template_bztji77";
         const ADMIN_EMAIL = "fov.cruz@gmail.com";
 
-        // --- GENERADOR DE CORAZONES ---
+        // --- TRUCO SECRETO PARA RESETEAR ---
+        let clickCount = 0;
+        let clickTimer;
+        document.getElementById('secretResetTitle').addEventListener('click', () => {
+            clickCount++;
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => clickCount = 0, 1000); 
+            
+            if(clickCount === 3) {
+                localStorage.removeItem('loveCoupons');
+                localStorage.removeItem('dailySurprise');
+                Swal.fire({ title: '¡Reseteo Completo!', text: 'Los cupones han vuelto a la normalidad.', icon: 'success' });
+                clickCount = 0;
+                setTimeout(() => location.reload(), 1500);
+            }
+        });
+
+        // --- GENERADOR DE CORAZONES DISTRIBUCIÓN UNIFORME ---
         function generateHearts() {
             const container = document.getElementById('heart-container');
-            const heartCount = 50; // Cantidad de corazones
-            const hearts = ['❤️', '💖', '💕', '💗', '🌸', '✨'];
+            const heartCount = window.innerWidth < 768 ? 20 : 40; 
+            const emojis = ['❤️', '💖', '💕', '✨', '🎂', '🎁'];
+
+            // Dividimos el ancho de la pantalla en secciones iguales para evitar que se amontonen
+            const sectionWidth = 100 / heartCount;
 
             for (let i = 0; i < heartCount; i++) {
                 const li = document.createElement('li');
-                const randomHeart = hearts[Math.floor(Math.random() * hearts.length)];
-                li.innerHTML = `<span>${randomHeart}</span>`;
+                const randomIcon = emojis[Math.floor(Math.random() * emojis.length)];
+                li.innerHTML = `<span>${randomIcon}</span>`;
 
-                // Posición horizontal aleatoria
-                li.style.left = Math.random() * 100 + '%';
+                // Posicionamiento uniforme horizontal
+                const basePosition = i * sectionWidth;
+                const randomOffset = Math.random() * sectionWidth;
+                li.style.left = (basePosition + randomOffset) + '%';
                 
-                // Tamaño aleatorio entre 15px y 40px
-                const size = Math.floor(Math.random() * 25) + 15 + 'px';
+                const size = Math.floor(Math.random() * 20) + 15 + 'px';
                 li.style.width = size;
                 li.style.height = size;
                 li.style.fontSize = size;
 
-                // Retraso aleatorio para que no salgan todos a la vez
+                // Retraso de tiempo aleatorio para que no suban todos juntos
                 li.style.animationDelay = Math.random() * 20 + 's';
-                
-                // Velocidad aleatoria (Más rápidos: entre 7s y 15s)
-                li.style.animationDuration = (Math.random() * 8 + 7) + 's';
+                // Velocidad de subida aleatoria
+                li.style.animationDuration = (Math.random() * 15 + 15) + 's'; 
 
                 container.appendChild(li);
             }
         }
 
         const SURPRISE_POOL = [
-            { text: 'Una cena preparada por mí 🍽️', gif: 'https://media.giphy.com/media/3o7TKSj0EYWpQ2J7J6/giphy.gif' },
+            { text: 'Una cena preparada por mí 🍽️', gif: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjBta3dqczU2Mm02czFkZXdqNDNmdXBxZ3dyNmgyNnVmdjkycWZoYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rjTvnqqm0XJPcGIc7G/giphy.gif' },
             { text: 'Una sesión de masajes relajantes 💆‍♀️', gif: 'https://media.giphy.com/media/l2Je3qSgOfhOXvpq8/giphy.gif' },
-            { text: 'Noche de cine y palomitas 🎬', gif: 'https://media.giphy.com/media/26AHG5KGFxSkQLB0Q/giphy.gif' }
+            { text: 'Noche de cine y palomitas 🎬', gif: 'https://media.giphy.com/media/26AHG5KGFxSkQLB0Q/giphy.gif' },
+            { text: 'Desayuno rico en la cama 🥞☕', gif: 'https://media.giphy.com/media/xT0xeQ9HQF8PbJEqRy/giphy.gif' },
+            { text: 'Un postre especial solo para ti 🍰', gif: 'https://media.giphy.com/media/5Zesu5VP1lUeA/giphy.gif' },
+            { text: 'Tarde de videojuegos y snacks 🎮', gif: 'https://media.giphy.com/media/l41YmQj15Q84u3UqQ/giphy.gif' },
+            { text: 'Un paseo sorpresa esta tarde 🌅', gif: 'https://media.giphy.com/media/l0ExncehJzexFpPlO/giphy.gif' },
+            { text: 'Noche de regaloneo (¡Cero celulares!) 📵', gif: 'https://media.giphy.com/media/TjB1NGAxEQO9a/giphy.gif' },
+            { text: 'Llegaré con tu dulce favorito 🍫', gif: 'https://media.giphy.com/media/1108D2tVaUN3eo/giphy.gif' },
+            { text: 'Prepararé un baño de espuma y relajación 🛁', gif: 'https://media.giphy.com/media/VbzZ1zU4u2eD6/giphy.gif' }
         ];
 
         const INITIAL_COUPONS = [
@@ -239,7 +288,7 @@
             { id: 3, title: 'Vale Comodín', emoji: '🃏', description: 'Escribe tu deseo aquí y se hará realidad hoy.', isRedeemed: false, requiresInput: true, userNote: '' },
             { id: 4, title: 'Escapada a la Playa', emoji: '🏖️', description: 'Arena, sol y nosotros caminando junto al mar.', isRedeemed: false },
             { id: 5, title: 'Maratón de Pelis', emoji: '🍿', description: 'Tarde completa de sofá, mantita y tus historias favoritas.', isRedeemed: false },
-            { id: 6, title: 'Brindis Especial', emoji: '🍹', description: 'Salimos a tomar algo rico para celebrar nuestro amor.', isRedeemed: false }
+            { id: 6, title: 'Tu Regalo Principal', emoji: '🎁', description: 'Ingresa la palabra mágica para descubrir dónde escondí tu regalo.', isRedeemed: false, requiresInput: true, userNote: '' }
         ];
 
         let coupons = [];
@@ -254,11 +303,13 @@
         });
 
         function backToDashboard() {
-            document.getElementById('transition-overlay').style.opacity = '1';
+            sessionStorage.setItem('showDashboard', 'true');
+            const overlay = document.getElementById('transition-overlay');
+            overlay.style.opacity = '1';
+            
             setTimeout(() => {
-                sessionStorage.setItem('returningFromSection', 'true');
-                window.location.href = 'dashboard.html';
-            }, 1000);
+                window.location.href = '../dashboard.html'; 
+            }, 600);
         }
 
         function loadState() {
@@ -282,16 +333,19 @@
             grid.innerHTML = '';
             coupons.forEach(c => {
                 const card = document.createElement('div');
-                card.className = `card ${c.isRedeemed ? 'opacity-60' : ''}`;
+                card.className = `card ${c.isRedeemed ? 'opacity-60 grayscale-[30%] border-solid border-gray-300 pointer-events-none' : ''}`;
                 
                 let actionHTML = '';
                 if(c.isRedeemed) {
                     actionHTML = `<div class="stamp-redeemed">Canjeado</div>`;
-                    if(c.requiresInput) actionHTML = `<div class="wish-locked">Deseo: <strong>"${c.userNote}"</strong></div>` + actionHTML;
+                    if(c.requiresInput && c.userNote) {
+                        actionHTML = `<div class="wish-locked">Deseo: <strong>"${c.userNote}"</strong></div>` + actionHTML;
+                    }
                 } else {
                     if(c.requiresInput) {
-                        actionHTML = `<textarea class="wish-input" id="note-${c.id}" placeholder="¿Qué deseas hoy?..." rows="2"></textarea>
-                                      <button class="btn-action mt-3" onclick="redeem(${c.id})">Enviar deseo</button>`;
+                        const placeholder = c.id === 6 ? "¿Cuál es la palabra mágica?" : "¿Qué deseas hoy?...";
+                        actionHTML = `<textarea class="wish-input" id="note-${c.id}" placeholder="${placeholder}" rows="2"></textarea>
+                                      <button class="btn-action mt-4" onclick="redeem(${c.id})">Enviar</button>`;
                     } else {
                         actionHTML = `<button class="btn-action mt-4" onclick="redeem(${c.id})">Canjear</button>`;
                     }
@@ -300,10 +354,10 @@
                 card.innerHTML = `
                     <div>
                         <div class="text-6xl mb-4">${c.emoji}</div>
-                        <h3 class="font-bold text-xl text-gray-700">${c.title}</h3>
-                        <p class="text-sm text-gray-500 mt-3 font-medium">${c.description}</p>
+                        <h3 class="font-bold text-xl text-gray-800">${c.title}</h3>
+                        <p class="text-sm text-gray-500 mt-2 font-medium px-2">${c.description}</p>
                     </div>
-                    <div class="mt-6">${actionHTML}</div>
+                    <div class="mt-4 pointer-events-auto">${actionHTML}</div>
                 `;
                 grid.appendChild(card);
             });
@@ -312,30 +366,47 @@
         function redeem(id) {
             const c = coupons.find(x => x.id === id);
             let note = "";
+            
             if(c.requiresInput) {
                 note = document.getElementById(`note-${id}`).value;
-                if(!note || note.trim().length < 3) {
-                    Swal.fire({ title: '¡Ups!', text: 'Dime qué deseas antes de enviar.', icon: 'info', confirmButtonColor: '#ff8fa3' });
+                if(!note || note.trim().length < 2) {
+                    Swal.fire({ title: '¡Ups!', text: 'Escribe algo antes de enviar.', icon: 'info', confirmButtonColor: '#ff4081' });
                     return;
                 }
             }
 
             Swal.fire({
-                title: `¿Canjear cupón?`,
-                text: `"${c.title}"`,
+                title: `¿Confirmar?`,
+                text: `Estás a punto de canjear: "${c.title}"`,
                 showCancelButton: true,
-                confirmButtonColor: '#ff8fa3',
+                confirmButtonColor: '#4caf50',
                 confirmButtonText: '¡Sí, quiero!',
-                cancelButtonText: 'Ahora no'
+                cancelButtonText: 'Ahora no',
+                shape: 'rounded'
             }).then((res) => {
                 if(res.isConfirmed) {
                     c.isRedeemed = true;
                     if(c.requiresInput) c.userNote = note;
+                    
                     localStorage.setItem('loveCoupons', JSON.stringify(coupons));
                     renderCoupons();
-                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff8fa3', '#ffffff'] });
-                    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { message: `Cupón: ${c.title} ${note ? '| Nota: ' + note : ''}`, email: ADMIN_EMAIL });
-                    Swal.fire({ title: '¡Listo!', text: 'Notificación enviada a Fabián ❤️', icon: 'success', confirmButtonColor: '#ff8fa3' });
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#4caf50', '#8e44ad', '#ffffff'] });
+                    
+                    // ENVÍO DE EMAILJS CON MANEJO DE ERRORES PARA DEBUG
+                    const templateParams = {
+                        message: `Cupón: ${c.title} ${note ? '| Nota/Deseo: ' + note : ''}`,
+                        email: ADMIN_EMAIL
+                    };
+
+                    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+                        .then(function(response) {
+                           console.log('SUCCESS!', response.status, response.text);
+                        }, function(error) {
+                           console.log('FAILED...', error);
+                           Swal.fire({ title: 'Error interno', text: 'Posible error en configuración de variables de E-JS, Avisale a Fabian para que revise la configuración.', icon: 'error' }); // Mensaje de error para el usuario en caso de fallo en el envío del correo E-JS=EmailJS
+                        });
+
+                    Swal.fire({ title: '¡Listo!', text: 'Notificación enviada a tu chico ❤️', icon: 'success', confirmButtonColor: '#4caf50' });
                 }
             });
         }
@@ -344,8 +415,16 @@
             const win = SURPRISE_POOL[Math.floor(Math.random()*SURPRISE_POOL.length)];
             localStorage.setItem('dailySurprise', JSON.stringify({timestamp: Date.now(), surprise: win}));
             showWinner(win);
-            confetti({ particleCount: 200, colors: ['#ff8fa3', '#ffffff'] });
-            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { message: `Sorpresa abierta: ${win.text}`, email: ADMIN_EMAIL });
+            confetti({ particleCount: 250, spread: 100, origin: { y: 0.5 }, colors: ['#ff4081', '#ffffff', '#ffd700'] });
+            
+            const templateParams = {
+                message: `¡Sorpresa diaria abierta!: ${win.text}`,
+                email: ADMIN_EMAIL
+            };
+
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+                .then(res => console.log("Correo Sorpresa Enviado", res))
+                .catch(err => console.log("Error Correo Sorpresa", err));
         }
 
         function showWinner(win) {
@@ -379,7 +458,17 @@
                 }
             }
         }
+
+        // --- 8. BOTÓN VOLVER ---
+        function backToDashboard() {
+            sessionStorage.setItem('showDashboard', 'true');
+            const overlay = document.getElementById('transition-overlay');
+            overlay.style.opacity = '1';
+            
+            setTimeout(() => {
+                window.location.href = 'dashboard.html'; // Ajusta esto a la ruta real de tu dashboard
+            }, 500);
+        }
     </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </body>
 </html>
