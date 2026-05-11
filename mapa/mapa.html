@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Nuestra Historia - Timeline ❤️</title>
+    <title>Nuestro proceso - Timeline ❤️</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
@@ -41,24 +41,27 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- FONDO DE CORAZONES ANIMADOS --- */
-        .circles { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            overflow: hidden; margin: 0; padding: 0; z-index: 0;
+        /* --- FONDO DE ESTRELLAS ANIMADAS --- */
+        #stars-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
         }
 
-        .circles li { 
-            position: absolute; display: block; list-style: none; 
-            bottom: -150px; opacity: 0; 
-            animation: floatUp linear infinite; 
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle linear infinite;
         }
 
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
-            10% { opacity: 0.6; }
-            80% { opacity: 0.4; }
-            100% { transform: translateY(-150vh) rotate(720deg) scale(1.2); opacity: 0; }
+        @keyframes twinkle {
+            0% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-20px); }
         }
 
         /* --- MAIN TITLE --- */
@@ -127,7 +130,7 @@
         #viewport:active { cursor: grabbing; }
 
         #world {
-            position: absolute; width: 3000px; height: 2500px;
+            position: absolute; width: 3000px; height: 2600px; /* Aumentado ligeramente para acomodar un nodo más */
             top: 0; left: 0; transform-origin: 0 0; will-change: transform;
         }
 
@@ -225,21 +228,21 @@
 
         .memory-content.active { pointer-events: auto; }
 
-        /* UI Element - Reset Map Button */
+        /* UI Element - Reset Map Button (AHORA ARRIBA) */
         .zoom-out-btn {
-            position: absolute; bottom: 35px; left: 50%;
+            position: absolute; top: 35px; left: 50%;
             background: var(--accent-gradient); color: white;
             padding: 12px 28px; border-radius: 30px; font-weight: 600; font-size: 0.95rem;
             box-shadow: 0 5px 20px rgba(255, 64, 129, 0.5); border: 1px solid rgba(255,255,255,0.2);
-            transform: translateX(-50%) translateY(100px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateX(-50%) translateY(-100px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex; align-items: center; gap: 10px;
         }
         .zoom-out-btn.visible { transform: translateX(-50%) translateY(0); }
 
-        /* UI Element - Nav Arrows */
+        /* UI Element - Nav Arrows (AHORA ABAJO) */
         .nav-arrows {
-            position: absolute; top: 25px; left: 50%;
-            transform: translateX(-50%) translateY(-120px);
+            position: absolute; bottom: 35px; left: 50%;
+            transform: translateX(-50%) translateY(120px);
             display: flex; gap: 25px; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .nav-arrows.visible { transform: translateX(-50%) translateY(0); }
@@ -267,6 +270,7 @@
             .instructions { display: none; } 
             .title-overlay { top: 20px; left: 50%; transform: translateX(-50%); text-align: center; width: 100%;}
             .great-vibes-title { font-size: 2.5rem !important;}
+            .zoom-out-btn { top: 90px; } /* Ajuste en móvil para no tapar el título */
         } 
 
         @keyframes fadeInOutPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
@@ -282,7 +286,7 @@
 <body>
 
     <div id="transition-overlay"></div>
-    <ul class="circles" id="heart-container"></ul>
+    <div id="stars-container"></div>
 
     <div id="youtube-player"></div>
 
@@ -298,8 +302,8 @@
         </div>
 
         <div class="title-overlay" id="main-title">
-            <div class="timer-badge">DESDE EL 1 DE DICIEMBRE 2024</div>
-            <h1 class="great-vibes-title" style="font-size: 3.5rem;">Nuestra Historia ❤️</h1>
+            <div class="timer-badge">Sempiternos 365</div>
+            <h1 class="great-vibes-title" style="font-size: 3.5rem;">Nuestro proceso ❤️</h1>
             <div id="live-timer" class="live-timer-style"></div>
         </div>
 
@@ -307,14 +311,14 @@
             <i class="fas fa-mouse-pointer mr-1"></i> Arrastra para explorar • Clic en puertas para abrir
         </div>
 
+        <button class="interactive-btn zoom-out-btn" id="btn-zoom-out">
+            <i class="fas fa-compress-arrows-alt"></i> Ver Mapa Completo
+        </button>
+
         <div class="nav-arrows" id="nav-controls">
             <div class="interactive-btn arrow-btn" id="btn-prev"><i class="fas fa-chevron-left"></i></div>
             <div class="interactive-btn arrow-btn" id="btn-next"><i class="fas fa-chevron-right"></i></div>
         </div>
-
-        <button class="interactive-btn zoom-out-btn" id="btn-zoom-out">
-            <i class="fas fa-compress-arrows-alt"></i> Ver Mapa Completo
-        </button>
     </div>
 
     <div id="viewport">
@@ -414,12 +418,12 @@
                 <div class="door-container">
                     <div class="door-frame"></div><div class="door-portal"></div><div class="door-panel"><div class="door-knob"></div></div>
                 </div>
-                <div class="node-info"><div class="node-date">8 Febrero 2025</div><div class="node-label">Actuación en la Disco</div></div>
+                <div class="node-info"><div class="node-date">8 Febrero 2025</div><div class="node-label">Extrañarnos...</div></div>
                 <div class="memory-content">
-                    <img src="assets/7.png" class="memory-img">
+                    <img src="assets/7.jpeg" class="memory-img">
                     <div class="memory-text">
-                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Actuación en la Disco</h2>
-                        <p class="text-sm md:text-base text-gray-300">Enfrentaste tus nervios y te subiste al escenario!. Estaba ahí como un novio orgulloso. Brillabas de verdad. Pensé: "Sí, tomé la decisión correcta".</p>
+                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Lejos pero unidos</h2>
+                        <p class="text-sm md:text-base text-gray-300">A veces no podiamos estar juntos pero sentíamos nuestra presencia en cada latido, nos llamabamos, escribiamos y nos sentiamos cerca como si estuvieramos ahí, lo recuerdas?.</p>
                     </div>
                 </div>
             </div>
@@ -428,12 +432,12 @@
                 <div class="door-container">
                     <div class="door-frame"></div><div class="door-portal"></div><div class="door-panel"><div class="door-knob"></div></div>
                 </div>
-                <div class="node-info"><div class="node-date">6 Marzo 2025</div><div class="node-label">Saliditas</div></div>
+                <div class="node-info"><div class="node-date">6 Marzo 2025</div><div class="node-label">Saliditas mensuales</div></div>
                 <div class="memory-content">
-                    <img src="assets/8.png" class="memory-img">
+                    <img src="assets/5.jpeg" class="memory-img">
                     <div class="memory-text">
-                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Saliditas</h2>
-                        <p class="text-sm md:text-base text-gray-300">Fuimos a usar el bono de almuerzo de tu madre. Conduciendo con el techo abierto. Comimos rico, vimos la puesta de sol y la rueda de la fortuna.</p>
+                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Saliditas mensuales</h2>
+                        <p class="text-sm md:text-base text-gray-300">Creamos planes escapandonos unos días, nuestros airbnb nos llevaban a lugares muy bonitos, comida rica, vistas preciosas, vino y nuevos momentos grabados en el inconciente.</p>
                     </div>
                 </div>
             </div>
@@ -442,12 +446,12 @@
                 <div class="door-container">
                     <div class="door-frame"></div><div class="door-portal"></div><div class="door-panel"><div class="door-knob"></div></div>
                 </div>
-                <div class="node-info"><div class="node-date">10 Mayo 2025</div><div class="node-label">¡Shrek!</div></div>
+                <div class="node-info"><div class="node-date">10 Mayo 2025</div><div class="node-label">Zapallar...</div></div>
                 <div class="memory-content">
-                    <img src="assets/9.png" class="memory-img">
+                    <img src="assets/9.jpeg" class="memory-img">
                     <div class="memory-text">
-                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Shrek el Musical</h2>
-                        <p class="text-sm md:text-base text-gray-300">¡Shrek! Fin de semana de musical. Dormimos donde tus abuelos. Paseamos por el Pablo, comimos helado rico y nos tomamos foto con el ogro.</p>
+                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Zapallar...</h2>
+                        <p class="text-sm md:text-base text-gray-300">Un día redondito donde lo improvisado se hizo parte del plan dentro del viaje, nos preparamos para el atardecer chocando nuestras copas bebiendo ese vino tan rico, intentando tomar alguna foto que no aparezcan las huellas en las copas, luego la tarde-noche caminando fue precioso juntos.</p>
                     </div>
                 </div>
             </div>
@@ -456,12 +460,12 @@
                 <div class="door-container">
                     <div class="door-frame"></div><div class="door-portal"></div><div class="door-panel"><div class="door-knob"></div></div>
                 </div>
-                <div class="node-info"><div class="node-date">15 Marzo 2025</div><div class="node-label">¡Batalla!</div></div>
+                <div class="node-info"><div class="node-date">15 Marzo 2025</div><div class="node-label">Descansando juntos...</div></div>
                 <div class="memory-content">
-                    <img src="assets/10.png" class="memory-img">
+                    <img src="assets/12.jpeg" class="memory-img">
                     <div class="memory-text">
-                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Batalla de Bandas</h2>
-                        <p class="text-sm md:text-base text-gray-300">Ustedes tocaron y ganaron el premio del público. Muy merecido. Verte en tu elemento fue increíble. Momento de: ¡Esa es mi novia!</p>
+                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Nuestro descanso en nuestros brazos...</h2>
+                        <p class="text-sm md:text-base text-gray-300">Poco a poco fuimos avanzando hasta llegar a los momentos de tranquilidad y conexión como estos, donde pudimos disfrutar de la compañía del otro sin apuros ni distracciones, somos solo nosotros...</p>
                     </div>
                 </div>
             </div>
@@ -470,12 +474,12 @@
                 <div class="door-container">
                     <div class="door-frame"></div><div class="door-portal"></div><div class="door-panel"><div class="door-knob"></div></div>
                 </div>
-                <div class="node-info"><div class="node-date">26 Junio 2025</div><div class="node-label">Linkin Park</div></div>
+                <div class="node-info"><div class="node-date">26 Junio 2025</div><div class="node-label">Salida de pelicula</div></div>
                 <div class="memory-content">
-                    <img src="assets/11.png" class="memory-img">
+                    <img src="assets/16.jpeg" class="memory-img">
                     <div class="memory-text">
-                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Concierto Linkin Park</h2>
-                        <p class="text-sm md:text-base text-gray-300">El concierto planeado desde hace mucho. Cuando el Hernan llamó, dijiste sí inmediatamente. Otra experiencia genial juntos.</p>
+                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Salida de pelicula</h2>
+                        <p class="text-sm md:text-base text-gray-300">Nuestra salida a viña juntos, cuando por poco tuvimos una hija adoptiva temporal, nuestra tarde-noche de pelis junto a esas caminatas nocturnas al borde del mar esperando nada, solos sin apuros, sin ver la hora. Otra experiencia bonita juntos.</p>
                     </div>
                 </div>
             </div>
@@ -484,12 +488,12 @@
                 <div class="door-container">
                     <div class="door-frame"></div><div class="door-portal"></div><div class="door-panel"><div class="door-knob"></div></div>
                 </div>
-                <div class="node-info"><div class="node-date">27 Julio 2025</div><div class="node-label">Estados Unidos</div></div>
+                <div class="node-info"><div class="node-date">27 Julio 2025</div><div class="node-label">Una tarde en papudo...</div></div>
                 <div class="memory-content">
-                    <img src="assets/12.png" class="memory-img">
+                    <img src="assets/19.jpeg" class="memory-img">
                     <div class="memory-text">
-                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Vacaciones en EE.UU.</h2>
-                        <p class="text-sm md:text-base text-gray-300">Nuestras primeras grandes vacaciones. Estaba nervioso por cómo te llevarías con mis amigos, pero todo salió genial.</p>
+                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Una tarde en papudo...</h2>
+                        <p class="text-sm md:text-base text-gray-300">Nuestras salidas nos llevaron a papudo, a ver incluso una "loba marina", que manera de reirnos con el avistamiento, la pasamos muy bien esa tarde, incluso fue una noche de suerte cuando ganamos en las maquinas del paseo costero, otro momento redondito en nuestro camino</p>
                     </div>
                 </div>
             </div>
@@ -498,12 +502,12 @@
                 <div class="door-container">
                     <div class="door-frame"></div><div class="door-portal"></div><div class="door-panel"><div class="door-knob"></div></div>
                 </div>
-                <div class="node-info"><div class="node-date">6 Agosto 2025</div><div class="node-label">Despedida</div></div>
+                <div class="node-info"><div class="node-date">6 Agosto 2025</div><div class="node-label">El tomi</div></div>
                 <div class="memory-content">
-                    <img src="assets/13.png" class="memory-img">
+                    <img src="assets/17.jpeg" class="memory-img">
                     <div class="memory-text">
-                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Despedida de EE.UU.</h2>
-                        <p class="text-sm md:text-base text-gray-300">El final de tus 2 semanas. Tuve que llevarte al aeropuerto solo y despedirme. Fue triste. La próxima nos quedamos más tiempo.</p>
+                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">El tomi</h2>
+                        <p class="text-sm md:text-base text-gray-300">Parte de los días que bebe se quedaba en Quillota te quedaste con el y luego los encontre jugando, tenerlos a ustedes juntos es mi felicidad.</p>
                     </div>
                 </div>
             </div>
@@ -512,12 +516,12 @@
                 <div class="door-container">
                     <div class="door-frame"></div><div class="door-portal"></div><div class="door-panel"><div class="door-knob"></div></div>
                 </div>
-                <div class="node-info"><div class="node-date">21 Septiembre 2025</div><div class="node-label">Castlefest</div></div>
+                <div class="node-info"><div class="node-date">21 Septiembre 2025</div><div class="node-label">Otra salida a la playita...</div></div>
                 <div class="memory-content">
-                    <img src="assets/img14.png" class="memory-img">
+                    <img src="assets/20.jpeg" class="memory-img">
                     <div class="memory-text">
-                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Castlefest</h2>
-                        <p class="text-sm md:text-base text-gray-300">¡Castlefest! Un viaje largo pero valió la pena ver a mi hermosa elfa. Tomé como 300 fotos ese día.</p>
+                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Otra salida a la playita...</h2>
+                        <p class="text-sm md:text-base text-gray-300">Ya se nos hizo costumbre visitar lugares y conocer nuevos paisajes juntos o acompañados, nuestras caminatas por la playa conversando y riendonos nos hacen perder todo el control sobre las horas.</p>
                     </div>
                 </div>
             </div>
@@ -526,12 +530,12 @@
                 <div class="door-container">
                     <div class="door-frame"></div><div class="door-portal"></div><div class="door-panel"><div class="door-knob"></div></div>
                 </div>
-                <div class="node-info"><div class="node-date">19 Octubre 2025</div><div class="node-label">Festival Medieval</div></div>
+                <div class="node-info"><div class="node-date">19 Octubre 2025</div><div class="node-label">Tricao</div></div>
                 <div class="memory-content">
-                    <img src="assets/15.png" class="memory-img">
+                    <img src="assets/23.jpeg" class="memory-img">
                     <div class="memory-text">
-                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Festival Medieval</h2>
-                        <p class="text-sm md:text-base text-gray-300">Festival Medieval. La casa embrujada estuvo divertida y tú también. Eso fue todo.</p>
+                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Tricao</h2>
+                        <p class="text-sm md:text-base text-gray-300">Ese viajecito fue muy rico porque salimos temprano camino a San Antonio, el camino fue tan motivante porque tenia muchas ganas de conocer el lugar pero tambien de hacerlo con ustedes, aquel día acanzamos a hacer incluso tramites post-paseo, llegamos tarde pero valio mucho la pena.</p>
                     </div>
                 </div>
             </div>
@@ -540,17 +544,32 @@
                 <div class="door-container">
                     <div class="door-frame"></div><div class="door-portal"></div><div class="door-panel"><div class="door-knob"></div></div>
                 </div>
-                <div class="node-info"><div class="node-date">2 Noviembre 2025</div><div class="node-label">Noche Emo</div></div>
+                <div class="node-info"><div class="node-date">2 Noviembre 2025</div><div class="node-label">la noche en santiago</div></div>
                 <div class="memory-content">
-                    <img src="assets/img16.png" class="memory-img">
+                    <img src="assets/26.jpeg" class="memory-img">
                     <div class="memory-text">
-                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Noche Emo Halloween</h2>
-                        <p class="text-sm md:text-base text-gray-300">La fiesta a la que fuiste cuando hicimos match y no pudimos vernos, ahora fuimos juntos. Gran noche con MCR y el viaje en bici con 2 chaquetas.</p>
+                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">la noche en santiago</h2>
+                        <p class="text-sm md:text-base text-gray-300">Fuimos al Beerfest el día anterior, la pasamos muy bien igual, todos empolvados y con buena musica, el día siguiente fue de planificación improvisada nuevamente, caminatas por el parquemet hasta llegar al bahai, linda experiencia aquellos días.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="node" data-x="600" data-y="2400">
+            <div class="node" data-x="900" data-y="2500">
+                <div class="door-container">
+                    <div class="door-frame"></div><div class="door-portal"></div><div class="door-panel"><div class="door-knob"></div></div>
+                </div>
+                <div class="node-info"><div class="node-date">11 Mayo 2026</div><div class="node-label">Salida de cierre de estación</div></div>
+                <div class="memory-content">
+                    <img src="assets/25.jpeg" class="memory-img">
+                    <div class="memory-text">
+                        <h2 class="text-2xl md:text-3xl text-pink-400 mb-2 font-semibold">Salida de cierre de estación</h2>
+                        <p class="text-sm md:text-base text-gray-300">Ese día que manera de sentirlo muy bien, fue mas que improvisado, tan maravilloso desde la ruta hacia y desde Panquehue, las paradas para comer, pasando por llai-llai a comprar algo para la sed, armando la carpa juntos, organizandonos, juntando leña y amaneciendo entre arboles y riachuelos junto a un pan tostado a las brazas y un té caliente...Fue perfecto para mi cariño mio...</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="node" data-x="1500" data-y="2500">
                 <div class="door-container">
                     <div class="door-frame" style="box-shadow: 0 0 25px white;"></div>
                     <div class="door-portal" style="background: radial-gradient(circle, white, cyan); opacity:0.9;"></div>
@@ -568,7 +587,7 @@
                     </div>
                     <div class="memory-text">
                         <h2 class="text-2xl md:text-3xl text-cyan-400 mb-2 font-semibold">El Futuro</h2>
-                        <p class="text-sm md:text-base text-gray-300">No puedo esperar a ver qué nos trae el próximo año juntos. ❤️</p>
+                        <p class="text-sm md:text-base text-gray-300">No puedo esperar a ver qué nos trae el futuro juntos ❤️</p>
                     </div>
                 </div>
             </div>
@@ -603,8 +622,26 @@
             });
         }
 
-        function onPlayerReady(event) {
-            // El navegador bloquea autoplay, así que esperamos el click en el botón 🎵
+function onPlayerReady(event) {
+            // 1. Intentamos forzar el autoplay directo (a veces funciona si el navegador ya confía en tu sitio)
+            player.playVideo();
+
+            // 2. El Plan Infalible: Iniciar la música al PRIMER clic, toque o arrastre en la pantalla
+            const startAudioOnFirstInteract = () => {
+                // Si la música NO está sonando, le damos play
+                if (player && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                    player.playVideo();
+                }
+                // Una vez que empieza, eliminamos este "escuchador" para que no interfiera más
+                document.removeEventListener('click', startAudioOnFirstInteract);
+                document.removeEventListener('touchstart', startAudioOnFirstInteract);
+                document.removeEventListener('mousedown', startAudioOnFirstInteract);
+            };
+
+            // Escuchamos cualquier interacción en toda la página
+            document.addEventListener('click', startAudioOnFirstInteract);
+            document.addEventListener('touchstart', startAudioOnFirstInteract, {passive: true});
+            document.addEventListener('mousedown', startAudioOnFirstInteract);
         }
 
         function onPlayerStateChange(event) {
@@ -621,7 +658,6 @@
                 icon.className = 'fas fa-music';
             }
 
-            // Pasar a la siguiente canción automáticamente
             if (event.data == YT.PlayerState.ENDED) {
                 currentTrackIndex++;
                 if (currentTrackIndex >= playlistData.length) currentTrackIndex = 0;
@@ -638,10 +674,9 @@
             }
         }
 
-
         // --- MAP CONFIGURATION ---
         const WORLD_WIDTH = 3000;
-        const WORLD_HEIGHT = 2500; 
+        const WORLD_HEIGHT = 2600; 
         let isZoomed = false;
         let currentNodeIndex = -1;
 
@@ -653,37 +688,31 @@
         const btnNext = document.getElementById('btn-next');
         const navControls = document.getElementById('nav-controls');
 
-        // INICIALIZACIÓN DIRECTA (Sin Pre-mapa)
         document.addEventListener('DOMContentLoaded', () => {
-            generateHearts();
-            // Retraso ligero para que cargue la estructura antes de hacer zoomOut
-            setTimeout(() => {
-                zoomOut(); 
-            }, 100);
+            createStars();
+            setTimeout(() => { zoomOut(); }, 100);
         });
 
-        // --- HEARTS GEN ---
-        function generateHearts() {
-            const container = document.getElementById('heart-container');
-            const heartCount = window.innerWidth < 768 ? 20 : 40;
-            const emojis = ['❤️', '💖', '💕', '✨', '🎂'];
-            const sectionWidth = 100 / heartCount;
-
-            for (let i = 0; i < heartCount; i++) {
-                const li = document.createElement('li');
-                const randomIcon = emojis[Math.floor(Math.random() * emojis.length)];
-                li.innerHTML = `<span>${randomIcon}</span>`;
-
-                const basePosition = i * sectionWidth;
-                const randomOffset = Math.random() * sectionWidth;
-                li.style.left = (basePosition + randomOffset) + '%';
+        // --- STARS GEN ---
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            const starCount = window.innerWidth < 768 ? 60 : 150;
+            
+            for (let i = 0; i < starCount; i++) {
+                let star = document.createElement('div');
+                star.classList.add('star');
                 
-                const size = Math.floor(Math.random() * 20) + 15 + 'px';
-                li.style.fontSize = size;
-                li.style.animationDelay = Math.random() * 10 + 's';
-                li.style.animationDuration = (Math.random() * 10 + 10) + 's'; 
-
-                container.appendChild(li);
+                let size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.top = `${Math.random() * 100}vh`;
+                
+                star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                
+                container.appendChild(star);
             }
         }
 
@@ -703,7 +732,6 @@
                 if (currentNodeIndex !== index) zoomToNode(index);
             });
 
-            // Touch support for Android
             let touchStartTime = 0;
             let touchStartPos = { x: 0, y: 0 };
 
@@ -812,7 +840,7 @@
             target.el.classList.add('open');
 
             const isMobile = window.innerWidth < 768;
-            const targetScale = isMobile ? 1.5 : 2.5; // Ajuste para que se vea la card bien en móvil
+            const targetScale = isMobile ? 1.5 : 2.5; 
 
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
@@ -851,7 +879,6 @@
 
             document.querySelectorAll('.node.open').forEach(el => el.classList.remove('open'));
 
-            // Escala inicial para ver todo el mapa de forma general
             const fitScale = Math.min(window.innerWidth / WORLD_WIDTH, window.innerHeight / WORLD_HEIGHT) * 1.5;
             const targetScale = Math.max(fitScale, MIN_SCALE);
 
@@ -921,7 +948,7 @@
             const now = new Date();
             const diff = now - startDate;
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            document.getElementById('live-timer').innerText = `Llevamos ${days} Días Juntos`;
+            document.getElementById('live-timer').innerText = `${days} Días Juntos`;
         }
         setInterval(updateTimer, 1000);
         updateTimer();
