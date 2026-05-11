@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nuestra Playlist ❤️</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-top: #1B2735;
+            --bg-bottom: #090A0F;
+            --accent-gradient: linear-gradient(135deg, #ff4081, #8e44ad);
+            --glass-bg: rgba(20, 25, 40, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: radial-gradient(ellipse at bottom, var(--bg-top) 0%, var(--bg-bottom) 100%);
+            min-height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 40px 20px 100px 20px; /* Padding inferior extra para el botón flotante */
+        }
+
+        /* --- HEADER --- */
+        .header { text-align: center; margin-bottom: 40px; width: 100%; z-index: 10;}
+        .main-title { font-family: 'Dancing Script', cursive; font-size: clamp(2.5rem, 6vw, 4rem); text-shadow: 0 0 20px rgba(255, 64, 129, 0.5); line-height: 1.2;}
+        .subtitle { font-size: 1rem; color: var(--text-muted); font-weight: 300; margin-top: 5px; }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .player-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 900px;
+            gap: 30px;
+            z-index: 10;
+        }
+
+        @media (min-width: 768px) {
+            .player-wrapper { flex-direction: row; align-items: flex-start; }
+            .player-ui { flex: 1; position: sticky; top: 40px; }
+            .playlist-ui { flex: 1.2; }
+        }
+
+        /* --- REPRODUCTOR (IZQUIERDA) --- */
+        .player-ui {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            width: 100%;
+        }
+
+        .cover-container {
+            width: clamp(180px, 40vw, 220px);
+            height: clamp(180px, 40vw, 220px);
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 5px rgba(255,255,255,0.05);
+            overflow: hidden;
+            margin-bottom: 30px;
+            position: relative;
+            animation: spin 20s linear infinite;
+            animation-play-state: paused;
+            background: #111; /* Fondo por defecto */
+        }
+        .cover-container.playing { animation-play-state: running; }
+        
+        .cover-container::after {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 45px; height: 45px; background: var(--bg-top); border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .cover-image { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s; }
+        .cover-image.loaded { opacity: 1; }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .track-info { text-align: center; margin-bottom: 25px; width: 100%; }
+        .track-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .track-artist { font-size: 1rem; color: #ff4081; font-weight: 500; }
+
+        /* Controles de Rango (Progreso) */
+        .progress-container { width: 100%; display: flex; align-items: center; gap: 12px; margin-bottom: 30px; font-size: 0.85rem; color: var(--text-muted); }
+        .progress-bar {
+            flex: 1; -webkit-appearance: none; appearance: none; height: 6px; background: rgba(255,255,255,0.1);
+            border-radius: 5px; outline: none; cursor: pointer;
+        }
+        .progress-bar::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 16px; height: 16px;
+            border-radius: 50%; background: #ff4081; cursor: pointer; box-shadow: 0 0 10px rgba(255, 64, 129, 0.8);
+        }
+
+        /* Controles de Audio */
+        .controls { display: flex; align-items: center; justify-content: center; gap: 30px; width: 100%; }
+        .ctrl-btn { color: white; font-size: 1.8rem; cursor: pointer; transition: 0.2s; opacity: 0.8; }
+        .ctrl-btn:hover { opacity: 1; transform: scale(1.1); color: #ff4081; }
+        .play-pause-btn { 
+            width: 65px; height: 65px; background: var(--accent-gradient);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; box-shadow: 0 10px 25px rgba(255, 64, 129, 0.4);
+            opacity: 1; transition: transform 0.2s;
+        }
+        .play-pause-btn:hover { transform: scale(1.05); color: white; }
+        .play-pause-btn:active { transform: scale(0.95); }
+
+        /* --- LISTA DE REPRODUCCIÓN (DERECHA) --- */
+        .playlist-ui {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .track-item {
+            display: flex; align-items: center; padding: 12px 15px;
+            background: rgba(255,255,255,0.03); border-radius: 20px; cursor: pointer;
+            transition: all 0.3s ease; border: 1px solid transparent;
+        }
+        .track-item:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
+        .track-item.active {
+            background: rgba(255, 64, 129, 0.15);
+            border-color: rgba(255, 64, 129, 0.3);
+        }
+
+        .track-thumb { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; margin-right: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);}
+        .track-details { flex: 1; overflow: hidden; }
+        .track-details h4 { font-size: 1.05rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: white; margin-bottom: 4px;}
+        .track-details p { font-size: 0.85rem; color: var(--text-muted); }
+        
+        /* Animación Ecualizador */
+        .track-anim { display: none; width: 22px; justify-content: space-between; height: 16px; align-items: flex-end; }
+        .track-item.active .track-anim { display: flex; }
+        .bar { width: 5px; background: #ff4081; border-radius: 3px; animation: bounce 0.8s infinite alternate; }
+        .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { 0% { height: 4px; } 100% { height: 100%; } }
+
+        /* --- BOTÓN VOLVER FLOTANTE (ESTILO DASHBOARD) --- */
+        .fab-btn {
+            position: fixed; bottom: 30px; left: 20px; height: 60px;
+            background: var(--accent-gradient); border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 2000;
+            display: flex; align-items: center; overflow: hidden;
+            cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 60px; justify-content: flex-start;
+        }
+        .fab-btn:hover { width: 140px; }
+        .fab-icon { min-width: 60px; text-align: center; font-size: 1.4rem; color: white; }
+        .fab-text { color: white; font-weight: 600; font-size: 1rem; opacity: 0; transition: 0.3s; white-space: nowrap; }
+        .fab-btn:hover .fab-text { opacity: 1; }
+
+        /* Ocultar el iframe real de YouTube */
+        #youtube-player { position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; }
+
+        /* OVERLAY TRANSICIÓN */
+        #transition-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; opacity:0; pointer-events:none; z-index:9999; transition: opacity 0.5s; }
+    </style>
+</head>
+<body>
+
+    <div id="transition-overlay"></div>
+
+    <div class="fab-btn" onclick="backToDashboard()">
+        <i class="fas fa-arrow-left fab-icon"></i>
+        <span class="fab-text">Volver</span>
+    </div>
+
+    <div class="header">
+        <h1 class="main-title">Nuestra Playlist</h1>
+        <p class="subtitle">La banda sonora de nuestra aventura</p>
+    </div>
+
+    <div class="player-wrapper">
+        
+        <div class="player-ui">
+            <div class="cover-container" id="coverContainer">
+                <img src="" alt="Album Cover" class="cover-image" id="coverImage" onload="this.classList.add('loaded')">
+            </div>
+
+            <div class="track-info">
+                <div class="track-title" id="currentTitle">Cargando...</div>
+                <div class="track-artist" id="currentArtist">Preparando la magia</div>
+            </div>
+
+            <div class="progress-container">
+                <span id="currentTime">0:00</span>
+                <input type="range" class="progress-bar" id="progressBar" value="0" min="0" max="100">
+                <span id="totalTime">0:00</span>
+            </div>
+
+            <div class="controls">
+                <i class="fas fa-step-backward ctrl-btn" onclick="prevTrack()"></i>
+                <div class="play-pause-btn ctrl-btn" onclick="togglePlay()">
+                    <i class="fas fa-play" id="playIcon"></i>
+                </div>
+                <i class="fas fa-step-forward ctrl-btn" onclick="nextTrack()"></i>
+            </div>
+        </div>
+
+        <div class="playlist-ui" id="playlistContainer">
+            </div>
+
+    </div>
+
+    <div id="youtube-player"></div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        // --- 1. CONFIGURACIÓN DE CANCIONES ---
+        const playlistData = [
+            { id: 'HJZmbH8qiXQ', title: 'Para Siempre', artist: 'Nuestra favorita' },
+            { id: 'NvR60Wg9R7Q', title: 'Momentos Mágicos', artist: 'La que nos encanta' },
+            { id: 'c0Ey7nVhdrU', title: 'Recuerdos Contigo', artist: 'Inolvidable' },
+            { id: 'jhMiIUb2GEA', title: 'A tu lado', artist: 'Especial' }
+        ];
+
+        let player;
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+        let progressInterval;
+        let isDraggingProgress = false;
+
+        // --- 2. RENDERIZADO INICIAL (Soluciona el problema de la pantalla negra) ---
+        // Dibujamos la UI de inmediato, sin esperar a YouTube
+        document.addEventListener("DOMContentLoaded", () => {
+            renderPlaylist();
+            updatePlayerUI();
+        });
+
+        // --- 3. INICIALIZAR YOUTUBE API ---
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '10',
+                width: '10',
+                videoId: playlistData[0].id,
+                playerVars: { 'playsinline': 1, 'controls': 0, 'disablekb': 1, 'rel': 0 },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        function onPlayerError(e) {
+            console.error("Error cargando YouTube. Recuerda usar Live Server si estás en local.");
+            document.getElementById('currentArtist').textContent = "Error de conexión (Usa Live Server)";
+        }
+
+        // --- 4. LÓGICA DEL REPRODUCTOR ---
+        function onPlayerReady(event) {
+            document.getElementById('currentArtist').textContent = playlistData[currentTrackIndex].artist;
+            document.getElementById('progressBar').addEventListener('input', () => { isDraggingProgress = true; });
+            document.getElementById('progressBar').addEventListener('change', seekTo);
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                updatePlayPauseIcon();
+                document.getElementById('coverContainer').classList.add('playing');
+                startProgressTimer();
+            } else {
+                isPlaying = false;
+                updatePlayPauseIcon();
+                document.getElementById('coverContainer').classList.remove('playing');
+                clearInterval(progressInterval);
+            }
+
+            if (event.data == YT.PlayerState.ENDED) {
+                nextTrack();
+            }
+        }
+
+        function togglePlay() {
+            if (!player || typeof player.playVideo !== 'function') {
+                alert("YouTube aún está conectando o bloqueado. Si estás abriendo el archivo local (file://), usa una extensión como Live Server.");
+                return;
+            }
+            if (isPlaying) {
+                player.pauseVideo();
+            } else {
+                player.playVideo();
+            }
+        }
+
+        function loadTrack(index) {
+            currentTrackIndex = index;
+            const track = playlistData[currentTrackIndex];
+            
+            updatePlayerUI();
+            updatePlaylistActiveState();
+
+            if (player && typeof player.loadVideoById === 'function') {
+                player.loadVideoById(track.id);
+            }
+        }
+
+        function prevTrack() {
+            let newIndex = currentTrackIndex - 1;
+            if (newIndex < 0) newIndex = playlistData.length - 1;
+            loadTrack(newIndex);
+        }
+
+        function nextTrack() {
+            let newIndex = currentTrackIndex + 1;
+            if (newIndex >= playlistData.length) newIndex = 0;
+            loadTrack(newIndex);
+        }
+
+        // --- 5. ACTUALIZAR INTERFAZ ---
+        function updatePlayerUI() {
+            const track = playlistData[currentTrackIndex];
+            document.getElementById('currentTitle').textContent = track.title;
+            document.getElementById('currentArtist').textContent = track.artist;
+            
+            // Forzar actualización de imagen quitando y poniendo clase
+            const imgEl = document.getElementById('coverImage');
+            imgEl.classList.remove('loaded');
+            imgEl.src = `https://img.youtube.com/vi/${track.id}/hqdefault.jpg`;
+        }
+
+        function updatePlayPauseIcon() {
+            const icon = document.getElementById('playIcon');
+            icon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+        }
+
+        // --- 6. PROGRESS BAR ---
+        function startProgressTimer() {
+            clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                if (isDraggingProgress || !player || !player.getCurrentTime) return;
+                
+                const currentTime = player.getCurrentTime();
+                const duration = player.getDuration();
+                
+                if (duration > 0) {
+                    const progressPercent = (currentTime / duration) * 100;
+                    document.getElementById('progressBar').value = progressPercent;
+                    document.getElementById('currentTime').textContent = formatTime(currentTime);
+                    document.getElementById('totalTime').textContent = formatTime(duration);
+                }
+            }, 500);
+        }
+
+        function seekTo(event) {
+            if (!player || !player.seekTo) return;
+            const progressPercent = event.target.value;
+            const duration = player.getDuration();
+            const seekTime = (progressPercent / 100) * duration;
+            
+            player.seekTo(seekTime, true);
+            isDraggingProgress = false;
+        }
+
+        function formatTime(seconds) {
+            if (!seconds) return "0:00";
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+
+        // --- 7. RENDERIZAR LISTA DERECHA ---
+        function renderPlaylist() {
+            const container = document.getElementById('playlistContainer');
+            container.innerHTML = '';
+
+            playlistData.forEach((track, index) => {
+                const thumbUrl = `https://img.youtube.com/vi/${track.id}/default.jpg`;
+                const isActive = index === currentTrackIndex ? 'active' : '';
+
+                const html = `
+                    <div class="track-item ${isActive}" onclick="loadTrack(${index})">
+                        <img src="${thumbUrl}" class="track-thumb" alt="thumb">
+                        <div class="track-details">
+                            <h4>${track.title}</h4>
+                            <p>${track.artist}</p>
+                        </div>
+                        <div class="track-anim">
+                            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function updatePlaylistActiveState() {
+            const items = document.querySelectorAll('.track-item');
+            items.forEach((item, index) => {
+                if (index === currentTrackIndex) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        // --- 8. BOTÓN VOLVER ---
+        function backToDashboard() {
+            sessionStorage.setItem('showDashboard', 'true');
+            const overlay = document.getElementById('transition-overlay');
+            overlay.style.opacity = '1';
+            
+            setTimeout(() => {
+                window.location.href = '../dashboard.html'; // Ajusta esto a la ruta real de tu dashboard
+            }, 500);
+        }
+    </script>
+</body>
+</html>
