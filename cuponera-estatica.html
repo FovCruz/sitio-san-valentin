@@ -278,19 +278,20 @@
             { text: 'Desayuno rico en la cama 🥞☕', gif: 'https://media.giphy.com/media/xT0xeQ9HQF8PbJEqRy/giphy.gif' },
             { text: 'Un postre especial solo para ti 🍰', gif: 'https://media.giphy.com/media/5Zesu5VP1lUeA/giphy.gif' },
             { text: 'Tarde de videojuegos y snacks 🎮', gif: 'https://media.giphy.com/media/l41YmQj15Q84u3UqQ/giphy.gif' },
-            { text: 'Un paseo sorpresa esta tarde 🌅', gif: 'https://media.giphy.com/media/l0ExncehJzexFpPlO/giphy.gif' },
+            { text: 'Un paseo para esta tarde 🌅', gif: 'https://media.giphy.com/media/l0ExncehJzexFpPlO/giphy.gif' },
             { text: 'Noche de regaloneo (¡Cero celulares!) 📵', gif: 'https://media.giphy.com/media/TjB1NGAxEQO9a/giphy.gif' },
             { text: 'Llegaré con tu dulce favorito 🍫', gif: 'https://media.giphy.com/media/1108D2tVaUN3eo/giphy.gif' },
             { text: 'Prepararé un baño de espuma y relajación 🛁', gif: 'https://media.giphy.com/media/VbzZ1zU4u2eD6/giphy.gif' }
         ];
 
         const INITIAL_COUPONS = [
-            { id: 1, title: 'Almuerzo Rico', emoji: '🥩', description: 'Cocinamos algo delicioso y yo me encargo de todo el orden.', isRedeemed: false },
+            { id: 1, title: 'Almuerzo Rico', emoji: '🥩', description: 'Cocinamos algo delicioso y yo me encargo de todo el orden y cocina.', isRedeemed: false },
             { id: 2, title: 'Masaje Anti-Estrés', emoji: '💆‍♀️', description: '15 minutos de relax total para desconectar del mundo.', isRedeemed: false },
-            { id: 3, title: 'Vale Comodín', emoji: '🃏', description: 'Escribe tu deseo aquí y se hará realidad hoy.', isRedeemed: false, requiresInput: true, userNote: '' },
-            { id: 4, title: 'Escapada a la Playa', emoji: '🏖️', description: 'Arena, sol y nosotros caminando junto al mar.', isRedeemed: false },
-            { id: 5, title: 'Maratón de Pelis', emoji: '🍿', description: 'Tarde completa de sofá, mantita y tus historias favoritas.', isRedeemed: false },
-            { id: 6, title: 'Tu Regalo Principal', emoji: '🎁', description: 'Ingresa la palabra mágica para descubrir dónde escondí tu regalo.', isRedeemed: false, requiresInput: true, userNote: '' }
+            { id: 4, title: 'Escapada a la Playa', emoji: '🏖️', description: 'Arena, mar y nosotros caminando junto a la costa.', isRedeemed: false },
+            { id: 5, title: 'Maratón de Pelis', emoji: '🍿', description: 'Tarde o Noche completa de camita, mantita y tus historias o pelis favoritas.', isRedeemed: false },
+            { id: 6, title: 'Salida a Bailar/Quedarnos', emoji: '🎁', description: 'Salida a algun lado a bailar o quedarnos en algún lugar bonito.', isRedeemed: false },
+            { id: 3, title: 'Vale Comodín', emoji: '🃏', description: 'Escribe tu deseo aquí para hacerlo juntos.', isRedeemed: false, requiresInput: true, userNote: '' },
+
         ];
 
         let coupons = [];
@@ -408,7 +409,7 @@
                            Swal.fire({ title: 'Error interno', text: 'Posible error en configuración de variables de E-JS, Avisale a Fabian para que revise la configuración.', icon: 'error' }); // Mensaje de error para el usuario en caso de fallo en el envío del correo E-JS=EmailJS
                         });
 
-                    Swal.fire({ title: '¡Listo!', text: 'Notificación enviada a tu chico ❤️', icon: 'success', confirmButtonColor: '#4caf50' });
+                    Swal.fire({ title: '¡Listo!', text: 'Notificación enviada a Fabián ❤️', icon: 'success', confirmButtonColor: '#4caf50' });
                 }
             });
         }

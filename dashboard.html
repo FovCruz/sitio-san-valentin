@@ -1,5 +1,3 @@
-<!-- DASHBOARD -->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,7 +14,7 @@
             --bg-top: #1B2735;
             --bg-bottom: #090A0F;
             --text-color: #ffffff;
-            --accent-gradient: linear-gradient(135deg, #6868d5, #ff4081); /* Color unificado */
+            --accent-gradient: linear-gradient(135deg, #6868d5, #ff4081);
             --glass-bg: rgba(20, 30, 50, 0.85);
             --glass-border: rgba(255, 255, 255, 0.15);
         }
@@ -51,10 +49,10 @@
             display: flex; align-items: center; justify-content: center;
             overflow: hidden; cursor: grab; z-index: 5;
         }
-        .slider-track { display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; height: 100%; width: 100%; }
+        .slider-track { display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; height: 100%; width: 100%; position: relative;}
 
         .card {
-            position: absolute;
+            position: absolute; /* Esto garantiza que todas partan desde el centro exacto */
             background: #1e1e1e; overflow: hidden; transform-style: preserve-3d;
             border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             border: 1px solid rgba(255,255,255,0.1);
@@ -75,13 +73,12 @@
         /* --- CARD EXPANDIDA (INFO INTERNA) --- */
         .card.expanded { z-index: 1000 !important; border: none; cursor: default; }
         .card.expanded img { transform: scale(1.1); filter: brightness(0.6); }
-        .card.expanded .card-label { opacity: 0; } /* Ocultamos el label simple al expandir */
+        .card.expanded .card-label { opacity: 0; } 
 
-        /* Contenedor de Info que se inyecta JS */
         .expanded-content {
             position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px;
             z-index: 10; text-align: center; opacity: 0; transform: translateY(20px);
-            transition: opacity 0.6s 0.3s, transform 0.6s 0.3s; /* Delay para que aparezca suave */
+            transition: opacity 0.6s 0.3s, transform 0.6s 0.3s;
         }
         .card.expanded .expanded-content { opacity: 1; transform: translateY(0); }
 
@@ -98,7 +95,6 @@
         }
         .enter-btn:active { transform: scale(0.95); }
 
-        /* Close Button (Dentro de la card expandida) */
         .card-close {
             position: absolute; top: 20px; right: 20px; width: 40px; height: 40px;
             background: rgba(255,255,255,0.2); border-radius: 50%; color: white;
@@ -109,9 +105,7 @@
 
         .slider-track.blurred .card:not(.expanded) { filter: blur(8px) brightness(0.3); transition: 0.5s; }
 
-        /* --- BOTONES ESQUINA (DRAWERS) --- */
-        
-        /* --- BOTONES FLOTANTES (UI/UX MEJORADO) --- */
+        /* --- BOTONES FLOTANTES (UI/UX) --- */
         .fab-btn {
             position: fixed; bottom: 30px; height: 60px;
             background: var(--accent-gradient); border-radius: 30px;
@@ -120,14 +114,12 @@
             cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* FAB Izquierdo: Reiniciar */
         .fab-left { left: 20px; width: 60px; justify-content: flex-start; }
         .fab-left.active { width: 150px; }
         .fab-left .fab-icon { min-width: 60px; text-align: center; font-size: 1.4rem; color: white; }
         .fab-left .fab-text { color: white; font-weight: 600; font-size: 1rem; opacity: 0; transition: 0.3s; white-space: nowrap; }
         .fab-left.active .fab-text { opacity: 1; }
 
-        /* FAB Derecho: Música */
         .fab-right { right: 20px; width: 60px; justify-content: flex-end; }
         .fab-right .fab-icon { min-width: 60px; text-align: center; font-size: 1.4rem; color: white; transition: 0.3s; }
         
@@ -138,7 +130,6 @@
         }
         .fab-right.active .fab-icon { display: none; }
 
-        /* Contenido del Player */
         .player-content {
             opacity: 0; width: 100%; padding: 15px 20px; pointer-events: none;
             display: none; flex-direction: column; justify-content: center;
@@ -163,30 +154,17 @@
 
         /* --- RESPONSIVE MOBILE --- */
         @media (max-width: 768px) {
-            .fab-right.active { 
-                /* En móvil, el player toma todo el ancho inferior para ser más cómodo */
-                width: calc(100% - 40px); left: 20px; right: 20px; bottom: 20px;
-            }
-        }
-
-        /* OVERLAY ZOOM */
-        #transition-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; opacity:0; pointer-events:none; z-index:9999; transition: opacity 1s; }
-        .zooming-in { transform: scale(20); pointer-events: none; }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 768px) {
             .card {
-                /* MÓVIL: Más estrechas para que se vean apiladas */
+                /* MÓVIL: Más estrechas */
                 width: 180px; 
                 height: 300px;
             }
             .header { top: 2vh; }
             .main-title { font-size: 3rem; }
             
-            /* Ajuste Drawers en móvil */
-            .corner-drawer-left { bottom: 20px; padding: 12px 15px; }
-            .corner-drawer-right { bottom: 20px; height: 50px; width: 60px; }
-            .corner-drawer-right.active { width: 100%; right: 0; border-radius: 20px 20px 0 0; bottom: 0; height: 180px; transform: translateX(0); }
+            .fab-right.active { 
+                width: calc(100% - 40px); left: 20px; right: 20px; bottom: 20px;
+            }
         }
     </style>
 </head>
@@ -199,10 +177,6 @@
 
     <div class="slider-container" id="sliderContainer">
         <div class="slider-track" id="sliderTrack">
-            <div class="card" data-title="Nuestra Historia" data-desc="El comienzo de todo... Haz clic para leer como empezó nuestra aventura." data-link="libro/libro.html">
-                <img src="assets/copas.jpg">
-                <div class="card-label">Historia</div>
-            </div>
             <div class="card" data-title="Cupones de Amor" data-desc="Canjeables por besos, abrazos y momentos especiales." data-link="cuponera-estatica.html">
                 <img src="assets/cuponera.jpg" alt="Cupones">
                 <div class="card-label">Cupones</div>
@@ -215,10 +189,6 @@
                 <img src="assets/musica.jpg" alt="Música">
                 <div class="card-label">Playlist</div>
             </div>
-            <div class="card" data-title="Dosis de Ternura" data-desc="Gatitos y amor aleatorio para alegrar tu día." data-link="sorpresa.html">
-                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&h=800">
-                <div class="card-label">Sorpresa</div>
-            </div>
         </div>
     </div>
 
@@ -227,7 +197,6 @@
         <span class="fab-text">Reiniciar</span>
     </div>
 
-        
     <div class="fab-btn fab-right" id="musicDrawer">
         <i class="fas fa-music fab-icon"></i>
         
@@ -256,29 +225,24 @@
             <audio id="audio-track" src="https://api.podcache.net/episodes/d748b852-11d6-4f25-9295-c314e0c8ad04/stream.mp3" preload="metadata"></audio>
         </div>
     </div>
-    </div>
 
     <script>
-        // --- 1. CONFIGURACIÓN POSICIONES ---
+        // --- 1. CONFIGURACIÓN POSICIONES (ARREGLADO PARA 3 CARDS) ---
         const getPositions = () => {
             const isMobile = window.innerWidth < 768;
             if (isMobile) {
-                // MÓVIL: Muy juntas (overlap)
+                // MÓVIL: 3 cards centradas (Centro, Derecha, Izquierda)
                 return [
-                    { z: 100, rotateY: 0, x: 0, opacity: 1, scale: 1 },
-                    { z: 50, rotateY: -10, x: 60, opacity: 0.8, scale: 0.9 },  // Muy pegada derecha
-                    { z: 0, rotateY: -20, x: 120, opacity: 0.6, scale: 0.8 },
-                    { z: 0, rotateY: 20, x: -120, opacity: 0.6, scale: 0.8 },
-                    { z: 50, rotateY: 10, x: -60, opacity: 0.8, scale: 0.9 }   // Muy pegada izquierda
+                    { z: 100, rotateY: 0, x: 0, opacity: 1, scale: 1 },         // Centro
+                    { z: 50, rotateY: -15, x: 90, opacity: 0.8, scale: 0.9 },   // Derecha
+                    { z: 50, rotateY: 15, x: -90, opacity: 0.8, scale: 0.9 }    // Izquierda
                 ];
             } else {
-                // DESKTOP: Arco amplio
+                // DESKTOP: 3 cards centradas (Centro, Derecha, Izquierda)
                 return [
-                    { z: 200, rotateY: 0, x: 0, opacity: 1, scale: 1 },
-                    { z: 100, rotateY: -15, x: 220, opacity: 0.8, scale: 0.9 },
-                    { z: 0, rotateY: -30, x: 400, opacity: 0.5, scale: 0.8 },
-                    { z: 0, rotateY: 30, x: -400, opacity: 0.5, scale: 0.8 },
-                    { z: 100, rotateY: 15, x: -220, opacity: 0.8, scale: 0.9 }
+                    { z: 200, rotateY: 0, x: 0, opacity: 1, scale: 1 },         // Centro
+                    { z: 100, rotateY: -20, x: 260, opacity: 0.8, scale: 0.9 }, // Derecha
+                    { z: 100, rotateY: 20, x: -260, opacity: 0.8, scale: 0.9 }  // Izquierda
                 ];
             }
         };
@@ -310,15 +274,14 @@
                         opacity: pos.opacity, scale: pos.scale,
                         duration: 0.5, ease: "power2.out"
                     });
-                    // Z-index dinámico
                     card.style.zIndex = Math.round(pos.opacity * 100);
-                    // Solo el centro interactúa
+                    
                     if (index === 0) {
                         card.style.pointerEvents = "all";
                         card.style.filter = "none";
                     } else {
                         card.style.pointerEvents = "none";
-                        card.style.filter = "brightness(0.5)"; // Oscurecer las de atrás
+                        card.style.filter = "brightness(0.5)"; 
                     }
                 });
             }
@@ -334,12 +297,10 @@
                 if (this.expandedCard) return;
                 this.expandedCard = card;
 
-                // 1. Crear contenido INTERNO
                 const title = card.dataset.title;
                 const desc = card.dataset.desc;
                 const link = card.dataset.link;
 
-                // HTML a inyectar sobre la carta
                 const innerHTML = `
                     <div class="card-close"><i class="fas fa-times"></i></div>
                     <div class="expanded-content">
@@ -349,12 +310,10 @@
                     </div>
                 `;
                 
-                // Clonar para la animación (para no romper el layout del slider)
                 const rect = card.getBoundingClientRect();
                 const clone = card.cloneNode(true);
-                clone.innerHTML += innerHTML; // Agregamos info
+                clone.innerHTML += innerHTML; 
                 
-                // Estilos iniciales del clon
                 clone.style.position = "fixed";
                 clone.style.left = rect.left + "px";
                 clone.style.top = rect.top + "px";
@@ -367,16 +326,13 @@
                 document.body.appendChild(clone);
                 this.cardClone = clone;
 
-                // Ocultar original
                 gsap.set(card, { opacity: 0 });
                 this.track.classList.add("blurred");
 
-                // Configurar botón cerrar del clon
                 clone.querySelector(".card-close").addEventListener("click", (e) => {
                     e.stopPropagation(); this.closeCard();
                 });
 
-                // Animación Expansión
                 const isMobile = window.innerWidth < 768;
                 const targetW = isMobile ? window.innerWidth * 0.9 : 400;
                 const targetH = isMobile ? window.innerHeight * 0.7 : 600;
@@ -393,9 +349,8 @@
                 if (!this.expandedCard) return;
                 const card = this.expandedCard;
                 const clone = this.cardClone;
-                const rect = card.getBoundingClientRect(); // Posición original (invisible)
+                const rect = card.getBoundingClientRect(); 
 
-                // Ocultar contenido interno primero
                 clone.querySelector(".expanded-content").style.opacity = 0;
                 clone.querySelector(".card-close").style.opacity = 0;
 
@@ -413,14 +368,12 @@
             }
 
             attachEvents() {
-                // Click (Solo en Desktop o Tap en movil)
                 this.cards.forEach(card => {
                     card.addEventListener("click", () => {
                         if (this.cards.indexOf(card) === 0) this.expandCard(card);
                     });
                 });
 
-                // Drag Logic
                 this.container.addEventListener("mousedown", e => { this.isDragging = true; this.startX = e.clientX; });
                 this.container.addEventListener("touchstart", e => { this.isDragging = true; this.startX = e.touches[0].clientX; }, {passive:false});
 
@@ -446,7 +399,6 @@
             const music = document.getElementById('musicDrawer');
             const closeP = document.getElementById('closePlayer');
 
-            // Lógica Reiniciar
             restart.addEventListener('click', () => {
                 if (restart.classList.contains('active')) {
                     NavigationManager.restart('index.html');
@@ -456,9 +408,8 @@
                 }
             });
 
-            // Lógica Música
             music.addEventListener('click', (e) => {
-                if (e.target.closest('.player-content')) return; // No cerrar si clickeas adentro
+                if (e.target.closest('.player-content')) return; 
                 music.classList.add('active');
             });
 
