@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Generador de Sonrisas ❤️</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --glass-bg: rgba(20, 30, 50, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --accent-gradient: linear-gradient(135deg, #6868d5, #ff4081);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(-45deg, #2b0a12, #4a0e19, #1B2735, #090A0F);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            height: 100vh; overflow: hidden; color: white;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- FONDO ESTRELLADO --- */
+        #stars-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .star {
+            position: absolute; background: white; border-radius: 50%;
+            animation: twinkle linear infinite;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* --- UI PRINCIPAL --- */
+        .main-container {
+            position: relative; z-index: 10;
+            width: 90%; max-width: 500px;
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+        }
+
+        .title {
+            font-family: 'Dancing Script', cursive; font-size: 3.5rem;
+            text-align: center; color: white; margin-bottom: 10px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 64, 129, 0.5);
+            animation: float 4s ease-in-out infinite;
+            cursor: pointer; /* Para el click secreto */
+            user-select: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* --- PANTALLA CRISTAL Y SVG --- */
+        .glass-panel {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 25px;
+            padding: 30px 25px; width: 100%; text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            min-height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: all 0.5s ease;
+        }
+
+        .visual-container {
+            width: 80px; height: 80px; margin-bottom: 15px;
+            animation: pulseHeart 2.5s infinite ease-in-out;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        
+        .visual-container.fade-out { opacity: 0; transform: scale(0.5); pointer-events: none; }
+
+        @keyframes pulseHeart {
+            0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 64, 129, 0.4)); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 20px rgba(255, 64, 129, 0.8)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 64, 129, 0.4)); }
+        }
+
+        .phrase-display {
+            font-size: 1.1rem; line-height: 1.6; font-weight: 300;
+            color: #f8f9fa; opacity: 1; transition: opacity 0.4s ease;
+        }
+        
+        .phrase-display.fade-out { opacity: 0; }
+
+        .category-label {
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;
+            color: #ff4081; font-weight: 600; margin-bottom: 15px;
+            display: none; 
+        }
+
+        /* --- BOTONES DE CATEGORÍA --- */
+        .buttons-grid {
+            display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%;
+        }
+
+        .cat-btn {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+            color: white; padding: 15px; border-radius: 15px; font-family: 'Poppins', sans-serif;
+            font-size: 1rem; cursor: pointer; transition: all 0.3s ease;
+            display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .cat-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.15); transform: translateY(-3px);
+            border-color: rgba(255, 64, 129, 0.5); box-shadow: 0 5px 15px rgba(255, 64, 129, 0.2);
+        }
+
+        .cat-btn:active:not(:disabled) { transform: translateY(1px); }
+        
+        .cat-btn:disabled {
+            opacity: 0.5; cursor: not-allowed; filter: grayscale(1);
+        }
+
+        .cat-icon { font-size: 1.3rem; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .cat-text { flex-grow: 1; text-align: left; margin-left: 15px; font-weight: 600; }
+        .cat-count { 
+            font-size: 0.8rem; background: rgba(255,64,129,0.2); 
+            padding: 4px 10px; border-radius: 12px; color: #ffebf0;
+            font-variant-numeric: tabular-nums; /* Para que el timer no salte */
+        }
+
+        /* --- BOTÓN VOLVER --- */
+        .fab-btn {
+            position: fixed; bottom: 30px; left: 30px; height: 60px;
+            background: var(--accent-gradient); border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 2000;
+            display: flex; align-items: center; overflow: hidden;
+            cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 60px; justify-content: flex-start;
+        }
+        .fab-btn:hover { width: 150px; }
+        .fab-icon { min-width: 60px; text-align: center; font-size: 1.4rem; color: white; }
+        .fab-text { color: white; font-weight: 600; font-size: 1rem; opacity: 0; transition: 0.3s; white-space: nowrap; }
+        .fab-btn:hover .fab-text { opacity: 1; }
+
+        #transition-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 100%); opacity:0; pointer-events:none; z-index:9999; transition: opacity 1.2s, backdrop-filter 1.2s; }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2.8rem; }
+            .glass-panel { padding: 25px 20px; min-height: 200px; }
+            .phrase-display { font-size: 1rem; }
+            .fab-btn { bottom: 20px; left: 20px; height: 55px; width: 55px; border-radius: 28px;}
+            .fab-btn:hover { width: 55px; } 
+            .fab-icon { min-width: 55px; font-size: 1.3rem; }
+            .fab-text { display: none; } 
+        }
+    </style>
+</head>
+<body>
+
+    <div id="transition-overlay"></div>
+    <div id="stars-container"></div>
+
+    <div class="fab-btn" onclick="backToDashboard()">
+        <i class="fas fa-arrow-left fab-icon"></i>
+        <span class="fab-text">Volver</span>
+    </div>
+
+    <div class="main-container">
+        <h1 class="title" onclick="secretReset()">Una sonrisa para ti</h1>
+
+        <div class="glass-panel" id="display-panel">
+            
+            <div class="visual-container" id="visual-container">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ff4081" />
+                            <stop offset="100%" stop-color="#8e44ad" />
+                        </linearGradient>
+                    </defs>
+                    <path fill="url(#heartGrad)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </div>
+
+            <div class="category-label" id="category-label"></div>
+            <div class="phrase-display" id="phrase-display">
+                Aquí aparecerá tu pequeña dosis de amor diaria. <br><br> Tienes 3 oportunidades por categoría cada día. ❤️
+            </div>
+        </div>
+
+        <div class="buttons-grid">
+            <button class="cat-btn" id="btn-razones" onclick="generatePhrase('razones')">
+                <i class="fas fa-heart cat-icon"></i>
+                <span class="cat-text">Por qué me encantas</span>
+                <span class="cat-count" id="count-razones">3/3</span>
+            </button>
+
+            <button class="cat-btn" id="btn-anecdotas" onclick="generatePhrase('anecdotas')">
+                <i class="fas fa-laugh-squint cat-icon"></i>
+                <span class="cat-text">Nuestras anécdotas</span>
+                <span class="cat-count" id="count-anecdotas">3/3</span>
+            </button>
+
+            <button class="cat-btn" id="btn-admiracion" onclick="generatePhrase('admiracion')">
+                <i class="fas fa-star cat-icon"></i>
+                <span class="cat-text">Cosas que admiro de ti</span>
+                <span class="cat-count" id="count-admiracion">3/3</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. FONDO DE ESTRELLAS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('stars-container');
+            const starCount = window.innerWidth < 768 ? 60 : 150;
+            for (let i = 0; i < starCount; i++) {
+                let star = document.createElement('div');
+                star.classList.add('star');
+                let size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`; star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}vw`; star.style.top = `${Math.random() * 100}vh`;
+                star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                container.appendChild(star);
+            }
+            initSystem();
+        });
+
+        // --- 2. BASE DE DATOS DE FRASES ---
+        const phrasesDB = {
+            razones: [
+                "Porque tu luz y mi tranquilidad encajan de forma perfecta y sin esfuerzo.",
+                "Por cómo haces que una simple caminata por la playa se sienta como una película.",
+                "Porque fuiste capaz de sacarme a bailar y cantar 'Te necesito' un dia y bailar lo que sea en donde sea, asi como en el antejardin",
+                "Porque mi lugar favorito en el mundo no es un sitio del mapa, es en el refugio que se forma cuando nos entrelazamos.",
+                "Porque cada día me haces querer ser un hombre mejor para nosotros",
+                "Porque la forma en que me miraste la primera vez que salimos se quedó grabada en mi cabeza para siempre.",
+                "Porque estas en la enfermedad y en la alegría siendo mi mejor apoyo y compañía."
+            ],
+            anecdotas: [
+                "¿Te acuerdas de la famosa 'loba marina' de Papudo? Aún me río cuando me preguntaste si era un lobo marino y era una mujer tirada en la playa 😂 par de ciegos jajajs.",
+                "Misión casi imposible: Tomar una foto al atardecer en Zapallar sin que salgan nuestras huellas en la copa de vino 🍷.",
+                "Sobrevivir la noche en un bosque frio (bueno no tanto) acostados sobre un colchon inflable al lado del rio viendo pelis en el pc...que ricooo",
+                "Nuestra cena y noche redonda: Comida china express apurados antes de ir al concierto en la Blondie y terminar bailando arriba de la tarima o como se llame 🍜.",
+                "Cuando salimos de paseo o algún lugar que no conocemos en el auto y nos perdemos con el GPS 😂."
+            ],
+            admiracion: [
+                "Admiro tu inmensa valentía para subirte a ese escenario en la disco brillando de verdad y viendo como me unia a la vibra",
+                "Me inspira profundamente tu talento y tu fuerza para hacer lo que amas, incluso cuando las cosas se ponen difíciles. Eres un ejemplo de fortaleza y perseverancia.",
+                "Admiro infinitamente lo regalona y cariñosa que eres, especialmente cuando te veo jugar, reírte y cuidar al Tomi. Son mi felicidad completa.",
+                "Me encanta cómo a veces te atacan los nervios, pero igual vas y terminas demostrando lo increíble y capaz que eres.",
+                "Admiro tu capacidad hermosa de improvisar y hacer que cualquier plan sin rumbo se convierta en una aventura redondita.",
+                "Eres un yinyang para mi, admiro tu capacidad de iluminar cualquier lugar donde entras."
+            ]
+        };
+
+        const MAX_DAILY = 3;
+        const LOCK_TIME_MS = 24 * 60 * 60 * 1000; // 24 Horas en milisegundos
+
+        let userData = {
+            counts: { razones: 0, anecdotas: 0, admiracion: 0 },
+            resetTimes: { razones: 0, anecdotas: 0, admiracion: 0 } // Timestamp de cuando volverán a estar activos
+        };
+        
+        let exhaustionTimeout;
+        let timerInterval;
+
+        // --- 3. LÓGICA DEL SISTEMA Y TIMERS INDEPENDIENTES ---
+        function initSystem() {
+            const storedData = localStorage.getItem('sempiternos_sorpresa_v2'); // Nueva clave para evitar conflictos con la versión anterior
+            if (storedData) {
+                userData = JSON.parse(storedData);
+            } else {
+                saveData();
+            }
+
+            // Iniciar el reloj general que revisa los tiempos cada segundo
+            startTimers();
+
+            if (checkAllBlocked()) {
+                showExhaustedState(0);
+            } else {
+                showInitialState();
+            }
+        }
+
+        function saveData() { 
+            localStorage.setItem('sempiternos_sorpresa_v2', JSON.stringify(userData)); 
+        }
+
+        function checkAllBlocked() {
+            const now = Date.now();
+            return (
+                (userData.counts.razones >= MAX_DAILY && now < userData.resetTimes.razones) &&
+                (userData.counts.anecdotas >= MAX_DAILY && now < userData.resetTimes.anecdotas) &&
+                (userData.counts.admiracion >= MAX_DAILY && now < userData.resetTimes.admiracion)
+            );
+        }
+
+        function startTimers() {
+            if(timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                const now = Date.now();
+                let stateChanged = false;
+
+                ['razones', 'anecdotas', 'admiracion'].forEach(cat => {
+                    // Si está bloqueado y el tiempo ya pasó, lo reseteamos
+                    if (userData.counts[cat] >= MAX_DAILY && now >= userData.resetTimes[cat]) {
+                        userData.counts[cat] = 0;
+                        userData.resetTimes[cat] = 0;
+                        stateChanged = true;
+                    }
+                });
+
+                if (stateChanged) saveData();
+                updateButtonsUI(); // Actualiza los textos de los botones constantemente
+            }, 1000);
+        }
+
+        function updateButtonsUI() {
+            const now = Date.now();
+            
+            ['razones', 'anecdotas', 'admiracion'].forEach(cat => {
+                const btn = document.getElementById(`btn-${cat}`);
+                const badge = document.getElementById(`count-${cat}`);
+                
+                if (userData.counts[cat] >= MAX_DAILY) {
+                    const diff = userData.resetTimes[cat] - now;
+                    if (diff > 0) {
+                        // Calcular tiempo restante
+                        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        const s = Math.floor((diff % (1000 * 60)) / 1000);
+                        
+                        badge.innerText = `⏳ ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                        btn.disabled = true;
+                    }
+                } else {
+                    const usesLeft = MAX_DAILY - userData.counts[cat];
+                    badge.innerText = `${usesLeft}/${MAX_DAILY}`;
+                    btn.disabled = false;
+                }
+            });
+        }
+
+        function showInitialState() {
+            document.getElementById('visual-container').style.display = "block";
+            setTimeout(() => document.getElementById('visual-container').classList.remove('fade-out'), 50);
+            
+            document.getElementById('category-label').style.display = "none";
+            document.getElementById('phrase-display').innerHTML = "Aquí aparecerá tu pequeña dosis de amor diaria. <br><br> Tienes 3 oportunidades por categoría cada día. ❤️";
+        }
+
+        function showExhaustedState(delay = 0) {
+            clearTimeout(exhaustionTimeout);
+            
+            exhaustionTimeout = setTimeout(() => {
+                const display = document.getElementById('phrase-display');
+                const catLabel = document.getElementById('category-label');
+                const visual = document.getElementById('visual-container');
+
+                display.classList.add('fade-out');
+                catLabel.style.display = "none";
+
+                setTimeout(() => {
+                    visual.style.display = "block";
+                    setTimeout(() => visual.classList.remove('fade-out'), 50);
+                    
+                    display.innerHTML = "Has descubierto todas tus sonrisas de momento.<br><br>Vuelve más tarde cuando los contadores terminen para más magia y amor. ✨";
+                    display.classList.remove('fade-out');
+                }, 400);
+            }, delay);
+        }
+
+        function generatePhrase(category) {
+            if (userData.counts[category] >= MAX_DAILY) return; 
+            clearTimeout(exhaustionTimeout); 
+
+            userData.counts[category]++;
+            
+            // Si es la tercera vez, asignamos el tiempo de reseteo para dentro de 24 horas exactas
+            if (userData.counts[category] >= MAX_DAILY) {
+                userData.resetTimes[category] = Date.now() + LOCK_TIME_MS;
+            }
+            saveData();
+
+            const array = phrasesDB[category];
+            const randomPhrase = array[Math.floor(Math.random() * array.length)];
+
+            const display = document.getElementById('phrase-display');
+            const catLabel = document.getElementById('category-label');
+            const visual = document.getElementById('visual-container');
+
+            display.classList.add('fade-out');
+            visual.classList.add('fade-out'); // Ocultar el corazón suavemente
+
+            setTimeout(() => {
+                visual.style.display = 'none'; 
+                
+                if(category === 'razones') catLabel.innerText = "Por qué me encantas...";
+                if(category === 'anecdotas') catLabel.innerText = "Recordando...";
+                if(category === 'admiracion') catLabel.innerText = "Lo que veo en ti...";
+                
+                catLabel.style.display = "block";
+                display.innerHTML = `"${randomPhrase}"`;
+                
+                display.classList.remove('fade-out');
+                updateButtonsUI();
+
+                if (checkAllBlocked()) {
+                    showExhaustedState(10000); // 10 segundos para leer la última antes de volver al estado bloqueado
+                }
+            }, 400); 
+        }
+
+        // --- 4. FUNCIÓN SECRETA DE RESETEO ---
+        let tapCount = 0;
+        let tapTimer;
+
+        function secretReset() {
+            tapCount++;
+            clearTimeout(tapTimer);
+            
+            // Si no toca 3 veces en menos de 1.5 segundos, se reinicia el contador de toques
+            tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+
+            if (tapCount === 3) {
+                // Reiniciar toda la data
+                userData = {
+                    counts: { razones: 0, anecdotas: 0, admiracion: 0 },
+                    resetTimes: { razones: 0, anecdotas: 0, admiracion: 0 }
+                };
+                saveData();
+                updateButtonsUI();
+                showInitialState();
+                tapCount = 0;
+
+                // Pequeño flashazo blanco en pantalla para confirmarte que funcionó el truco
+                const overlay = document.getElementById('transition-overlay');
+                overlay.style.background = "white";
+                overlay.style.opacity = "0.5";
+                setTimeout(() => {
+                    overlay.style.opacity = "0";
+                    setTimeout(() => {
+                        overlay.style.background = "radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 100%)";
+                    }, 1200);
+                }, 200);
+            }
+        }
+
+        // --- 5. FUNCIÓN VOLVER ---
+        function backToDashboard() {
+            sessionStorage.setItem('showDashboard', 'true');
+            const zoomOverlay = document.getElementById('transition-overlay');
+            zoomOverlay.style.opacity = '1';
+            zoomOverlay.style.backdropFilter = 'blur(10px)';
+            setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
+        }
+    </script>
+</body>
+</html>
