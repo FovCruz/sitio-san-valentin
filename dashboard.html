@@ -49,14 +49,16 @@
             display: flex; align-items: center; justify-content: center;
             overflow: hidden; cursor: grab; z-index: 5;
         }
-        .slider-track { display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; height: 100%; width: 100%; }
+        .slider-track { display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; height: 100%; width: 100%; position: relative;}
 
+        /* --- CARDS GENERALES --- */
         .card {
-            position: absolute;
+            position: absolute; 
             background: #1e1e1e; overflow: hidden; transform-style: preserve-3d;
             border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.1);
-            width: 280px; height: 400px;
+            border: 1px solid rgba(255,255,255,0.15); /* Borde estándar de 1px */
+            width: 280px; height: 400px; 
+            transition: border 0.4s ease, box-shadow 0.4s ease;
         }
 
         .card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; transition: 0.5s; }
@@ -70,14 +72,29 @@
             transition: opacity 0.3s;
         }
 
-        .card.expanded { z-index: 1000 !important; border: none; cursor: default; }
+        /* --- CARD PRINCIPAL (ACTIVA) Y EXPANDIDA (BORDE DORADO 1PX ESTÁTICO) --- */
+        .card.active-card, .card.expanded {
+            border: 1px solid transparent; 
+            background: 
+                linear-gradient(#1e1e1e, #1e1e1e) padding-box, 
+                linear-gradient(135deg, #c5a059, #ffdf73) border-box; /* Gradiente dorado estático */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 15px rgba(255, 223, 115, 0.3);
+        }
+
+        /* --- CARD EXPANDIDA --- */
+        .card.expanded { 
+            z-index: 1000 !important; 
+            cursor: default; 
+            /* Sombra un poco más grande cuando se abre */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 25px rgba(255, 223, 115, 0.4); 
+        }
         .card.expanded img { transform: scale(1.1); filter: brightness(0.6); }
         .card.expanded .card-label { opacity: 0; } 
 
         .expanded-content {
             position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px;
             z-index: 10; text-align: center; opacity: 0; transform: translateY(20px);
-            transition: opacity 0.6s 0.3s, transform 0.6s 0.3s; 
+            transition: opacity 0.6s 0.3s, transform 0.6s 0.3s;
         }
         .card.expanded .expanded-content { opacity: 1; transform: translateY(0); }
 
@@ -104,7 +121,7 @@
 
         .slider-track.blurred .card:not(.expanded) { filter: blur(8px) brightness(0.3); transition: 0.5s; }
 
-        /* --- BOTONES FLOTANTES --- */
+        /* --- BOTONES FLOTANTES (UI/UX) --- */
         .fab-btn {
             position: fixed; bottom: 30px; height: 60px;
             background: var(--accent-gradient); border-radius: 30px;
@@ -123,7 +140,7 @@
         .fab-right .fab-icon { min-width: 60px; text-align: center; font-size: 1.4rem; color: white; transition: 0.3s; }
         
         .fab-right.active {
-            width: 320px; height: 140px; border-radius: 24px;
+            width: 320px; height: 150px; border-radius: 24px;
             background: var(--glass-bg); backdrop-filter: blur(15px);
             border: 1px solid var(--glass-border); justify-content: center; align-items: center;
         }
@@ -137,31 +154,34 @@
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .p-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px; }
-        .p-title { font-size: 1rem; font-weight: 600; color: #ff4081; white-space: nowrap; }
-        .p-close { font-size: 1.2rem; cursor: pointer; padding: 5px; color: #aaa; transition: color 0.2s; }
+        /* Mejoras tipográficas del reproductor */
+        .p-header { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 5px; }
+        .p-title-container { flex-grow: 1; overflow: hidden; }
+        .p-title { font-size: 1.05rem; font-weight: 600; color: #ff4081; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+        .p-artist { font-size: 0.85rem; color: #cccccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; margin-top: 2px;}
+        
+        .p-close { font-size: 1.2rem; cursor: pointer; padding: 5px; color: #aaa; transition: color 0.2s; margin-left: 10px; }
         .p-close:hover { color: white; }
         
-        .p-controls { display: flex; align-items: center; justify-content: center; gap: 25px; margin-top: 10px; }
-        .p-btn { font-size: 1.8rem; cursor: pointer; color: white; transition: transform 0.2s; }
+        .p-controls { display: flex; align-items: center; justify-content: center; gap: 30px; margin-top: 15px; }
+        .p-btn { font-size: 1.5rem; cursor: pointer; color: white; transition: transform 0.2s; }
         .p-btn:active { transform: scale(0.8); }
+        .p-play-btn { font-size: 2.2rem !important; color: #ff4081; }
         
         .wave-mini svg path { fill: url(#PSgrad_0); animation: 4s infinite; }
         @keyframes morph { 0%,100%{d:path('M299,15 L0,15 L0,6 C12,9 21,10 26,10 C34,10 47,2 57,2 C67,2 71,7 81,7 C91,7 95,0 104,0 C112,0 118,13 129,13 C140,13 138,7 146,7 C154,7 160,10 170,10 C181,10 184,2 192,2 C201,2 209,8 217,8 C225,8 236,4 243,4 C250,4 264,12 272,12 C276,12 286,10 299,6 L299,15 Z')} 50%{d:path('M299,15 L0,15 L0,5 C9,3 17,2 22,2 C30,2 35,9 45,9 C55,9 60,6 70,6 C80,6 94,0 102,0 C111,0 115,7 126,7 C137,7 137,4 148,4 C159,4 163,11 174,11 C185,11 187,0 197,0 C207,0 216,5 224,5 C232,5 236,2 244,2 C252,2 258,11 266,11 C273,11 288,3 299,3 L299,15 Z')} }
 
         #transition-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; opacity:0; pointer-events:none; z-index:9999; transition: opacity 1s; }
 
+        /* Ocultar YouTube */
+        #youtube-player { position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; }
+
+        /* --- RESPONSIVE MOBILE --- */
         @media (max-width: 768px) {
-            .card {
-                width: 180px; 
-                height: 300px;
-            }
+            .card { width: 180px; height: 300px; }
             .header { top: 2vh; }
             .main-title { font-size: 3rem; }
-            
-            .fab-right.active { 
-                width: calc(100% - 40px); left: 20px; right: 20px; bottom: 20px;
-            }
+            .fab-right.active { width: calc(100% - 40px); left: 20px; right: 20px; bottom: 20px; }
         }
     </style>
 </head>
@@ -203,7 +223,10 @@
         
         <div class="player-content">
             <div class="p-header">
-                <span class="p-title">🎵 Nuestra Canción</span>
+                <div class="p-title-container">
+                    <span class="p-title" id="track-title">🎵 Cargando...</span>
+                    <span class="p-artist" id="track-artist">Cargando artista...</span>
+                </div>
                 <i class="fas fa-times p-close" id="closePlayer"></i>
             </div>
             
@@ -218,39 +241,138 @@
             </div>
 
             <div class="p-controls">
-                <i class="fas fa-backward p-btn" onclick="document.getElementById('audio-track').currentTime -= 10"></i>
-                <i id="playBtn" class="fas fa-play-circle p-btn" style="font-size: 2.2rem;"></i>
-                <i id="pauseBtn" class="fas fa-pause-circle p-btn" style="font-size: 2.2rem; display:none"></i>
-                <i class="fas fa-forward p-btn" onclick="document.getElementById('audio-track').currentTime += 10"></i>
+                <i class="fas fa-step-backward p-btn" id="prevBtn" onclick="prevTrack()"></i>
+                <i id="playBtn" class="fas fa-play-circle p-btn p-play-btn" onclick="togglePlay()"></i>
+                <i id="pauseBtn" class="fas fa-pause-circle p-btn p-play-btn" style="display:none" onclick="togglePlay()"></i>
+                <i class="fas fa-step-forward p-btn" id="nextBtn" onclick="nextTrack()"></i>
             </div>
-            <audio id="audio-track" src="https://api.podcache.net/episodes/d748b852-11d6-4f25-9295-c314e0c8ad04/stream.mp3" preload="metadata"></audio>
         </div>
     </div>
 
+    <div id="youtube-player"></div>
+
+    <script src="assets/js/music-data.js"></script>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+
     <script>
-        // --- 1. CONFIGURACIÓN POSICIONES PARA 4 CARDS ---
+        // --- 1. LÓGICA DE YOUTUBE (Lee de music-data.js) ---
+        let player;
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+
+        function onYouTubeIframeAPIReady() {
+            // Inicializa YouTube usando el primer video del array centralizado (playlistData)
+            player = new YT.Player('youtube-player', {
+                height: '10',
+                width: '10',
+                videoId: playlistData[0].id,
+                playerVars: { 'playsinline': 1, 'controls': 0, 'disablekb': 1, 'rel': 0 },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            updatePlayerUI();
+            
+            // Intenta reproducir solo si el navegador lo permite
+            player.playVideo();
+            
+            // Si el navegador bloquea el autoplay, se activará con el primer clic en la pantalla
+            const startAudioOnFirstInteract = () => {
+                if (player && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                    player.playVideo();
+                }
+                document.removeEventListener('click', startAudioOnFirstInteract);
+                document.removeEventListener('touchstart', startAudioOnFirstInteract);
+            };
+
+            document.addEventListener('click', startAudioOnFirstInteract);
+            document.addEventListener('touchstart', startAudioOnFirstInteract, {passive: true});
+        }
+
+        function onPlayerStateChange(event) {
+            const playBtn = document.getElementById('playBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const wave = document.querySelector('.wave-mini svg path');
+
+            if (event.data == YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'block';
+                wave.style.animationName = 'morph';
+            } else {
+                isPlaying = false;
+                pauseBtn.style.display = 'none';
+                playBtn.style.display = 'block';
+                wave.style.animationName = 'none';
+            }
+
+            // Si la canción termina, pasar a la siguiente automáticamente
+            if (event.data == YT.PlayerState.ENDED) {
+                nextTrack();
+            }
+        }
+
+        function togglePlay() {
+            if (!player || typeof player.playVideo !== 'function') return;
+            if (isPlaying) {
+                player.pauseVideo();
+            } else {
+                player.playVideo();
+            }
+        }
+
+        function loadTrack(index) {
+            currentTrackIndex = index;
+            updatePlayerUI();
+            if (player && typeof player.loadVideoById === 'function') {
+                player.loadVideoById(playlistData[currentTrackIndex].id);
+            }
+        }
+
+        function prevTrack() {
+            let newIndex = currentTrackIndex - 1;
+            if (newIndex < 0) newIndex = playlistData.length - 1;
+            loadTrack(newIndex);
+        }
+
+        function nextTrack() {
+            let newIndex = currentTrackIndex + 1;
+            if (newIndex >= playlistData.length) newIndex = 0;
+            loadTrack(newIndex);
+        }
+
+        function updatePlayerUI() {
+            const track = playlistData[currentTrackIndex];
+            document.getElementById('track-title').innerText = track.title;
+            document.getElementById('track-artist').innerText = track.artist;
+        }
+
+        // --- 2. CONFIGURACIÓN POSICIONES CARRUSEL (4 CARDS) ---
         const getPositions = () => {
             const isMobile = window.innerWidth < 768;
             if (isMobile) {
-                // MÓVIL: Posiciones simétricas en 4 tiempos
                 return [
-                    { z: 100, rotateY: 0, x: 0, opacity: 1, scale: 1 },        // 0: Centro
-                    { z: 30, rotateY: -15, x: 100, opacity: 0.8, scale: 0.85 }, // 1: Derecha
-                    { z: -50, rotateY: 0, x: 0, opacity: 0, scale: 0.7 },      // 2: Atrás (Invisible)
-                    { z: 30, rotateY: 15, x: -100, opacity: 0.8, scale: 0.85 }  // 3: Izquierda
+                    { z: 100, rotateY: 0, x: 0, opacity: 1, scale: 1 },        
+                    { z: 30, rotateY: -15, x: 100, opacity: 0.8, scale: 0.85 }, 
+                    { z: -50, rotateY: 0, x: 0, opacity: 0, scale: 0.7 },      
+                    { z: 30, rotateY: 15, x: -100, opacity: 0.8, scale: 0.85 }  
                 ];
             } else {
-                // DESKTOP: Posiciones simétricas en 4 tiempos
                 return [
-                    { z: 200, rotateY: 0, x: 0, opacity: 1, scale: 1 },         // 0: Centro
-                    { z: 50, rotateY: -25, x: 280, opacity: 0.8, scale: 0.85 }, // 1: Derecha
-                    { z: -100, rotateY: 0, x: 0, opacity: 0, scale: 0.7 },      // 2: Atrás (Invisible)
-                    { z: 50, rotateY: 25, x: -280, opacity: 0.8, scale: 0.85 }  // 3: Izquierda
+                    { z: 200, rotateY: 0, x: 0, opacity: 1, scale: 1 },         
+                    { z: 50, rotateY: -25, x: 280, opacity: 0.8, scale: 0.85 }, 
+                    { z: -100, rotateY: 0, x: 0, opacity: 0, scale: 0.7 },      
+                    { z: 50, rotateY: 25, x: -280, opacity: 0.8, scale: 0.85 }  
                 ];
             }
         };
 
-        // --- 2. LOGICA SLIDER & EXPANSION ---
+        // --- 3. LÓGICA DEL CARRUSEL ---
         class CircularSlider {
             constructor() {
                 this.track = document.getElementById("sliderTrack");
@@ -283,10 +405,13 @@
                     if (index === 0) {
                         card.style.pointerEvents = "all";
                         card.style.filter = "none";
+                        // Agregamos la clase para activar el borde dorado
+                        card.classList.add("active-card"); 
                     } else {
                         card.style.pointerEvents = "none";
-                        // Oscurecer las cartas laterales y traseras
                         card.style.filter = "brightness(0.5)"; 
+                        // Removemos la clase de las cartas traseras
+                        card.classList.remove("active-card"); 
                     }
                 });
             }
@@ -398,7 +523,7 @@
             }
         }
 
-        // --- 3. GESTIÓN BOTONES FLOTANTES (FABs) ---
+        // --- 4. GESTIÓN BOTONES FLOTANTES (FABs) ---
         const initDrawers = () => {
             const restart = document.getElementById('restartDrawer');
             const music = document.getElementById('musicDrawer');
@@ -424,18 +549,7 @@
             });
         };
 
-        // --- 4. LOGICA PLAYER ---
-        const initPlayer = () => {
-            const track = document.getElementById('audio-track');
-            const play = document.getElementById('playBtn');
-            const pause = document.getElementById('pauseBtn');
-            const wave = document.querySelector('.wave-mini svg path');
-
-            play.onclick = () => { track.play(); play.style.display='none'; pause.style.display='block'; wave.style.animationName='morph'; }
-            pause.onclick = () => { track.pause(); pause.style.display='none'; play.style.display='block'; wave.style.animationName='none'; }
-        };
-
-        // --- 5. NAV & ESTRELLAS ---
+        // --- 5. NAVEGACIÓN Y ESTRELLAS ---
         const NavigationManager = (() => {
             const overlay = document.getElementById('transition-overlay');
             const container = document.body;
@@ -476,7 +590,6 @@
             StarSystem;
             new CircularSlider();
             initDrawers();
-            initPlayer();
         });
 
     </script>

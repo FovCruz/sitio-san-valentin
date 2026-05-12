@@ -1,5 +1,3 @@
-<!-- CUPONERA -->
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -38,7 +36,7 @@
             background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
             color: var(--text-main);
             overflow-x: hidden;
-            padding-bottom: 100px; /* Espacio inferior para el botón flotante */
+            padding-bottom: 100px;
         }
 
         /* --- EFECTO DE CARGA --- */
@@ -49,7 +47,18 @@
             transition: opacity 1s ease-in-out;
         }
 
-        /* --- FONDO DE CORAZONES DINÁMICOS (Distribución mejorada) --- */
+        /* Loader para la nube */
+        #cloud-loader {
+            position: fixed; top: 20px; right: 20px; font-size: 0.85rem; color: #ff4081;
+            background: rgba(255,255,255,0.8); padding: 8px 15px; border-radius: 20px;
+            display: flex; align-items: center; gap: 8px; opacity: 0; transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 5000; font-weight: 600;
+        }
+        #cloud-loader.active { opacity: 1; }
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- FONDO DE CORAZONES DINÁMICOS --- */
         .circles { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             overflow: hidden; margin: 0; padding: 0; z-index: -1;
@@ -62,7 +71,6 @@
             animation: floatUp linear infinite; 
         }
 
-        /* Animación usando vh para cubrir todo el alto de la pantalla uniformemente */
         @keyframes floatUp {
             0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
             10% { opacity: 0.8; }
@@ -73,7 +81,7 @@
         /* --- TÍTULOS --- */
         .main-title { font-family: 'Dancing Script', cursive; text-shadow: 0 2px 10px rgba(255, 64, 129, 0.2); }
 
-        /* --- CARDS GLASSMORPHISM CON BORDE PUNTEADO --- */
+        /* --- CARDS GLASSMORPHISM --- */
         .card {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(12px);
@@ -81,23 +89,19 @@
             padding: 30px 20px;
             box-shadow: 0 10px 30px rgba(255, 64, 129, 0.08);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* Borde punteado por defecto */
             border: 2px dashed #ffb6c1; 
             text-align: center;
             display: flex; flex-direction: column; justify-content: space-between;
             min-height: 360px;
         }
 
-        /* Hover con borde verde lineal */
         .card:hover {
             transform: translateY(-8px);
             background: rgba(255, 255, 255, 0.85);
             box-shadow: 0 15px 35px rgba(76, 175, 80, 0.2);
-            /* Borde verde solido al pasar el mouse */
             border: 2px solid #4caf50; 
         }
 
-        /* Tarjeta especial para sorpresa (hereda el hover verde pero empieza con otro color) */
         .surprise-card {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 240, 245, 0.9));
             border: 2px dashed #ff4081;
@@ -136,14 +140,13 @@
 
         .btn-action:active { transform: scale(0.95); box-shadow: 0 2px 10px rgba(255, 64, 129, 0.3); }
 
-        /* --- INPUT COMODÍN --- */
         .wish-input {
             width: 100%; padding: 14px; border: 1.5px dashed #ffccd5;
             border-radius: 16px; margin-top: 10px; font-size: 0.9rem;
             text-align: center; outline: none; background: rgba(255, 255, 255, 0.8);
             font-family: 'Poppins', sans-serif; transition: border-color 0.3s;
         }
-        .wish-input:focus { border: 1.5px solid #4caf50; } /* Se pone verde al escribir */
+        .wish-input:focus { border: 1.5px solid #4caf50; } 
 
         .wish-locked {
             font-size: 0.85rem; color: #6b7280; font-style: italic; margin-bottom: 10px;
@@ -175,6 +178,7 @@
 <body>
 
     <div id="transition-overlay"></div>
+    <div id="cloud-loader"><i class="fas fa-sync spinner"></i> Sincronizando...</div>
 
     <ul class="circles" id="heart-container"></ul>
 
@@ -216,60 +220,19 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN EMAILJS
+        // --- CONFIGURACIÓN NUBE Y CORREOS ---
+        const CLOUD_BIN_ID = "6a035ce9c0954111d812b872"; 
+        const CLOUD_API_KEY = "$2a$10$Et.q25JyixX62pP25Pxr3e0sJGSiPya41ASVx56zD9XAbJx0CuMHq";
+
         const EMAILJS_SERVICE_ID = "service_m32mxit";
         const EMAILJS_TEMPLATE_ID = "template_bztji77";
         const ADMIN_EMAIL = "fov.cruz@gmail.com";
 
-        // --- TRUCO SECRETO PARA RESETEAR ---
-        let clickCount = 0;
-        let clickTimer;
-        document.getElementById('secretResetTitle').addEventListener('click', () => {
-            clickCount++;
-            clearTimeout(clickTimer);
-            clickTimer = setTimeout(() => clickCount = 0, 1000); 
-            
-            if(clickCount === 3) {
-                localStorage.removeItem('loveCoupons');
-                localStorage.removeItem('dailySurprise');
-                Swal.fire({ title: '¡Reseteo Completo!', text: 'Los cupones han vuelto a la normalidad.', icon: 'success' });
-                clickCount = 0;
-                setTimeout(() => location.reload(), 1500);
-            }
-        });
-
-        // --- GENERADOR DE CORAZONES DISTRIBUCIÓN UNIFORME ---
-        function generateHearts() {
-            const container = document.getElementById('heart-container');
-            const heartCount = window.innerWidth < 768 ? 20 : 40; 
-            const emojis = ['❤️', '💖', '💕', '✨', '🎂', '🎁'];
-
-            // Dividimos el ancho de la pantalla en secciones iguales para evitar que se amontonen
-            const sectionWidth = 100 / heartCount;
-
-            for (let i = 0; i < heartCount; i++) {
-                const li = document.createElement('li');
-                const randomIcon = emojis[Math.floor(Math.random() * emojis.length)];
-                li.innerHTML = `<span>${randomIcon}</span>`;
-
-                // Posicionamiento uniforme horizontal
-                const basePosition = i * sectionWidth;
-                const randomOffset = Math.random() * sectionWidth;
-                li.style.left = (basePosition + randomOffset) + '%';
-                
-                const size = Math.floor(Math.random() * 20) + 15 + 'px';
-                li.style.width = size;
-                li.style.height = size;
-                li.style.fontSize = size;
-
-                // Retraso de tiempo aleatorio para que no suban todos juntos
-                li.style.animationDelay = Math.random() * 20 + 's';
-                // Velocidad de subida aleatoria
-                li.style.animationDuration = (Math.random() * 15 + 15) + 's'; 
-
-                container.appendChild(li);
-            }
-        }
+        // Estructura de datos global
+        let appData = {
+            coupons: [],
+            dailySurprise: null 
+        };
 
         const SURPRISE_POOL = [
             { text: 'Una cena preparada por mí 🍽️', gif: 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjBta3dqczU2Mm02czFkZXdqNDNmdXBxZ3dyNmgyNnVmdjkycWZoYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rjTvnqqm0XJPcGIc7G/giphy.gif' },
@@ -279,7 +242,7 @@
             { text: 'Un postre especial solo para ti 🍰', gif: 'https://media.giphy.com/media/5Zesu5VP1lUeA/giphy.gif' },
             { text: 'Tarde de lo que quieras con snacks 🎮', gif: 'https://media.giphy.com/media/l41YmQj15Q84u3UqQ/giphy.gif' },
             { text: 'Un paseo para esta tarde 🌅', gif: 'https://media.giphy.com/media/l0ExncehJzexFpPlO/giphy.gif' },
-            { text: 'Noche de regaloneo 📵', gif: 'https://media.giphy.com/media/TjB1NGAxEQO9a/giphy.gif' },
+            { text: 'Noche de regaloneo 📵', gif: 'https://media.giphy.com/media/TjB1NGAxEQO9a/giphy.gif' }
         ];
 
         const INITIAL_COUPONS = [
@@ -288,51 +251,95 @@
             { id: 4, title: 'Escapada a la Playa', emoji: '🏖️', description: 'Arena, mar y nosotros caminando junto a la costa.', isRedeemed: false },
             { id: 5, title: 'Maratón de Pelis', emoji: '🍿', description: 'Tarde o Noche completa de camita, mantita y tus historias o pelis favoritas.', isRedeemed: false },
             { id: 6, title: 'Salida a Bailar/Quedarnos', emoji: '🎁', description: 'Salida a algun lado a bailar o quedarnos en algún lugar bonito.', isRedeemed: false },
-            { id: 3, title: 'Vale Comodín', emoji: '🃏', description: 'Escribe tu deseo aquí para hacerlo juntos.', isRedeemed: false, requiresInput: true, userNote: '' },
-
+            { id: 3, title: 'Vale Comodín', emoji: '🃏', description: 'Escribe tu deseo aquí para hacerlo juntos.', isRedeemed: false, requiresInput: true, userNote: '' }
         ];
-
-        let coupons = [];
 
         document.addEventListener('DOMContentLoaded', () => {
             generateHearts();
             setTimeout(() => document.getElementById('transition-overlay').style.opacity = '0', 300);
-            loadState();
-            renderCoupons();
-            checkDailySurprise();
+            initSystem();
             setInterval(updateTimers, 1000);
         });
 
-        function backToDashboard() {
-            sessionStorage.setItem('showDashboard', 'true');
-            const overlay = document.getElementById('transition-overlay');
-            overlay.style.opacity = '1';
+        // --- LÓGICA DE SINCRONIZACIÓN ---
+        async function initSystem() {
+            document.getElementById('cloud-loader').classList.add('active');
+            try {
+                if (CLOUD_BIN_ID) {
+                    const response = await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}/latest`, {
+                        headers: { 'X-Master-Key': CLOUD_API_KEY }
+                    });
+                    const data = await response.json();
+                    
+                    if (data.record && data.record.coupons) {
+                        appData = data.record;
+                        appData.coupons = mergeCoupons(appData.coupons);
+                    } else {
+                        initDefaultData();
+                    }
+                } else {
+                    loadLocalData();
+                }
+            } catch (error) {
+                console.error("Error nube, cargando local:", error);
+                loadLocalData();
+            }
             
-            setTimeout(() => {
-                window.location.href = '../dashboard.html'; 
-            }, 600);
+            document.getElementById('cloud-loader').classList.remove('active');
+            renderCoupons();
+            checkDailySurprise();
         }
 
-        function loadState() {
-            const saved = localStorage.getItem('loveCoupons');
-            if (saved) {
-                let parsed = JSON.parse(saved);
-                if (parsed.length < INITIAL_COUPONS.length) {
-                    const existingIds = parsed.map(c => c.id);
-                    const missing = INITIAL_COUPONS.filter(c => !existingIds.includes(c.id));
-                    parsed = [...parsed, ...missing];
-                    localStorage.setItem('loveCoupons', JSON.stringify(parsed));
+        function initDefaultData() {
+            appData = {
+                coupons: JSON.parse(JSON.stringify(INITIAL_COUPONS)),
+                dailySurprise: null
+            };
+            saveData();
+        }
+
+        function loadLocalData() {
+            const savedC = localStorage.getItem('loveCoupons_v2');
+            const savedS = localStorage.getItem('dailySurprise_v2');
+            
+            appData.coupons = savedC ? mergeCoupons(JSON.parse(savedC)) : JSON.parse(JSON.stringify(INITIAL_COUPONS));
+            appData.dailySurprise = savedS ? JSON.parse(savedS) : null;
+        }
+
+        function mergeCoupons(fetchedCoupons) {
+            let merged = [...fetchedCoupons];
+            const existingIds = merged.map(c => c.id);
+            const missing = INITIAL_COUPONS.filter(c => !existingIds.includes(c.id));
+            return [...merged, ...missing];
+        }
+
+        async function saveData() {
+            localStorage.setItem('loveCoupons_v2', JSON.stringify(appData.coupons));
+            localStorage.setItem('dailySurprise_v2', JSON.stringify(appData.dailySurprise));
+
+            if (CLOUD_BIN_ID) {
+                document.getElementById('cloud-loader').classList.add('active');
+                try {
+                    await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': CLOUD_API_KEY
+                        },
+                        body: JSON.stringify(appData)
+                    });
+                } catch (error) {
+                    console.error("Error guardando en la nube", error);
                 }
-                coupons = parsed;
-            } else {
-                coupons = JSON.parse(JSON.stringify(INITIAL_COUPONS));
+                document.getElementById('cloud-loader').classList.remove('active');
             }
         }
 
+        // --- RENDERIZADO DE UI ---
         function renderCoupons() {
             const grid = document.getElementById('couponsGrid');
             grid.innerHTML = '';
-            coupons.forEach(c => {
+            appData.coupons.forEach(c => {
                 const card = document.createElement('div');
                 card.className = `card ${c.isRedeemed ? 'opacity-60 grayscale-[30%] border-solid border-gray-300 pointer-events-none' : ''}`;
                 
@@ -365,7 +372,7 @@
         }
 
         function redeem(id) {
-            const c = coupons.find(x => x.id === id);
+            const c = appData.coupons.find(x => x.id === id);
             let note = "";
             
             if(c.requiresInput) {
@@ -389,11 +396,10 @@
                     c.isRedeemed = true;
                     if(c.requiresInput) c.userNote = note;
                     
-                    localStorage.setItem('loveCoupons', JSON.stringify(coupons));
+                    saveData(); 
                     renderCoupons();
                     confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#4caf50', '#8e44ad', '#ffffff'] });
                     
-                    // ENVÍO DE EMAILJS CON MANEJO DE ERRORES PARA DEBUG
                     const templateParams = {
                         message: `Cupón: ${c.title} ${note ? '| Nota/Deseo: ' + note : ''}`,
                         email: ADMIN_EMAIL
@@ -404,7 +410,7 @@
                            console.log('SUCCESS!', response.status, response.text);
                         }, function(error) {
                            console.log('FAILED...', error);
-                           Swal.fire({ title: 'Error interno', text: 'Posible error en configuración de variables de E-JS, Avisale a Fabian para que revise la configuración.', icon: 'error' }); // Mensaje de error para el usuario en caso de fallo en el envío del correo E-JS=EmailJS
+                           Swal.fire({ title: 'Error interno', text: 'No se pudo enviar el correo a Fabián, pero el cupón fue canjeado.', icon: 'warning' });
                         });
 
                     Swal.fire({ title: '¡Listo!', text: 'Notificación enviada a Fabián ❤️', icon: 'success', confirmButtonColor: '#4caf50' });
@@ -414,7 +420,9 @@
 
         function openSurprise() {
             const win = SURPRISE_POOL[Math.floor(Math.random()*SURPRISE_POOL.length)];
-            localStorage.setItem('dailySurprise', JSON.stringify({timestamp: Date.now(), surprise: win}));
+            appData.dailySurprise = { timestamp: Date.now(), surprise: win };
+            
+            saveData();
             showWinner(win);
             confetti({ particleCount: 250, spread: 100, origin: { y: 0.5 }, colors: ['#ff4081', '#ffffff', '#ffd700'] });
             
@@ -424,7 +432,6 @@
             };
 
             emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-                .then(res => console.log("Correo Sorpresa Enviado", res))
                 .catch(err => console.log("Error Correo Sorpresa", err));
         }
 
@@ -436,39 +443,81 @@
         }
 
         function checkDailySurprise() {
-            const saved = localStorage.getItem('dailySurprise');
-            if(saved) {
-                const data = JSON.parse(saved);
-                if(Date.now() - data.timestamp < 86400000) showWinner(data.surprise);
+            if(appData.dailySurprise) {
+                if(Date.now() - appData.dailySurprise.timestamp < 86400000) {
+                    showWinner(appData.dailySurprise.surprise);
+                }
             }
         }
 
         function updateTimers() {
-            const saved = localStorage.getItem('dailySurprise');
-            if(saved) {
-                const data = JSON.parse(saved);
-                const diff = 86400000 - (Date.now() - data.timestamp);
+            if(appData.dailySurprise) {
+                const diff = 86400000 - (Date.now() - appData.dailySurprise.timestamp);
                 if(diff > 0) {
                     const h = Math.floor(diff/3600000); const m = Math.floor((diff%3600000)/60000); const s = Math.floor((diff%60000)/1000);
                     document.getElementById('surpriseTimer').style.display = 'block';
                     document.getElementById('timerText').textContent = `${h}h ${m}m ${s}s`;
                 } else {
-                    localStorage.removeItem('dailySurprise');
+                    appData.dailySurprise = null;
+                    saveData();
                     document.getElementById('surpriseCard').style.display = 'flex';
                     document.getElementById('surpriseWinner').style.display = 'none';
                 }
             }
         }
 
-        // --- 8. BOTÓN VOLVER ---
+        // --- TRUCO SECRETO PARA RESETEAR ---
+        let clickCount = 0;
+        let clickTimer;
+        document.getElementById('secretResetTitle').addEventListener('click', () => {
+            clickCount++;
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => clickCount = 0, 1000); 
+            
+            if(clickCount === 3) {
+                initDefaultData(); 
+                Swal.fire({ title: '¡Reseteo Completo!', text: 'Los cupones han vuelto a la normalidad.', icon: 'success' });
+                clickCount = 0;
+                setTimeout(() => location.reload(), 1500);
+            }
+        });
+
+        // --- EFECTOS VISUALES ---
+        function generateHearts() {
+            const container = document.getElementById('heart-container');
+            const heartCount = window.innerWidth < 768 ? 20 : 40; 
+            const emojis = ['❤️', '💖', '💕', '✨', '🎂', '🎁'];
+            const sectionWidth = 100 / heartCount;
+
+            for (let i = 0; i < heartCount; i++) {
+                const li = document.createElement('li');
+                const randomIcon = emojis[Math.floor(Math.random() * emojis.length)];
+                li.innerHTML = `<span>${randomIcon}</span>`;
+
+                const basePosition = i * sectionWidth;
+                const randomOffset = Math.random() * sectionWidth;
+                li.style.left = (basePosition + randomOffset) + '%';
+                
+                const size = Math.floor(Math.random() * 20) + 15 + 'px';
+                li.style.width = size;
+                li.style.height = size;
+                li.style.fontSize = size;
+
+                li.style.animationDelay = Math.random() * 20 + 's';
+                li.style.animationDuration = (Math.random() * 15 + 15) + 's'; 
+
+                container.appendChild(li);
+            }
+        }
+
         function backToDashboard() {
             sessionStorage.setItem('showDashboard', 'true');
             const overlay = document.getElementById('transition-overlay');
             overlay.style.opacity = '1';
             
             setTimeout(() => {
-                window.location.href = 'dashboard.html'; // Ajusta esto a la ruta real de tu dashboard
-            }, 500);
+                window.location.href = '../dashboard.html'; 
+            }, 600);
         }
     </script>
 </body>

@@ -59,7 +59,7 @@
             text-align: center; color: white; margin-bottom: 10px;
             text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 64, 129, 0.5);
             animation: float 4s ease-in-out infinite;
-            cursor: pointer; /* Para el click secreto */
+            cursor: pointer;
             user-select: none;
         }
 
@@ -68,7 +68,7 @@
             50% { transform: translateY(-10px); }
         }
 
-        /* --- PANTALLA CRISTAL Y SVG --- */
+        /* --- PANTALLA CRISTAL --- */
         .glass-panel {
             background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border); border-radius: 25px;
@@ -134,7 +134,7 @@
         .cat-count { 
             font-size: 0.8rem; background: rgba(255,64,129,0.2); 
             padding: 4px 10px; border-radius: 12px; color: #ffebf0;
-            font-variant-numeric: tabular-nums; /* Para que el timer no salte */
+            font-variant-numeric: tabular-nums; 
         }
 
         /* --- BOTÓN VOLVER --- */
@@ -150,6 +150,15 @@
         .fab-icon { min-width: 60px; text-align: center; font-size: 1.4rem; color: white; }
         .fab-text { color: white; font-weight: 600; font-size: 1rem; opacity: 0; transition: 0.3s; white-space: nowrap; }
         .fab-btn:hover .fab-text { opacity: 1; }
+
+        /* Loader para la nube */
+        #cloud-loader {
+            position: absolute; top: 10px; right: 10px; font-size: 0.8rem; color: #aaa;
+            display: flex; align-items: center; gap: 5px; opacity: 0; transition: 0.3s;
+        }
+        #cloud-loader.active { opacity: 1; }
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         #transition-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 100%); opacity:0; pointer-events:none; z-index:9999; transition: opacity 1.2s, backdrop-filter 1.2s; }
 
@@ -179,6 +188,8 @@
 
         <div class="glass-panel" id="display-panel">
             
+            <div id="cloud-loader"><i class="fas fa-sync spinner"></i> Sincronizando...</div>
+
             <div class="visual-container" id="visual-container">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
@@ -193,33 +204,39 @@
 
             <div class="category-label" id="category-label"></div>
             <div class="phrase-display" id="phrase-display">
-                Aquí aparecerá tu pequeña dosis de amor diaria. <br><br> Tienes 3 oportunidades por categoría cada día. ❤️
+                Conectando con la magia... ✨
             </div>
         </div>
 
         <div class="buttons-grid">
-            <button class="cat-btn" id="btn-razones" onclick="generatePhrase('razones')">
+            <button class="cat-btn" id="btn-razones" onclick="generatePhrase('razones')" disabled>
                 <i class="fas fa-heart cat-icon"></i>
                 <span class="cat-text">Por qué me encantas</span>
-                <span class="cat-count" id="count-razones">3/3</span>
+                <span class="cat-count" id="count-razones">-/-</span>
             </button>
 
-            <button class="cat-btn" id="btn-anecdotas" onclick="generatePhrase('anecdotas')">
+            <button class="cat-btn" id="btn-anecdotas" onclick="generatePhrase('anecdotas')" disabled>
                 <i class="fas fa-laugh-squint cat-icon"></i>
                 <span class="cat-text">Nuestras anécdotas</span>
-                <span class="cat-count" id="count-anecdotas">3/3</span>
+                <span class="cat-count" id="count-anecdotas">-/-</span>
             </button>
 
-            <button class="cat-btn" id="btn-admiracion" onclick="generatePhrase('admiracion')">
+            <button class="cat-btn" id="btn-admiracion" onclick="generatePhrase('admiracion')" disabled>
                 <i class="fas fa-star cat-icon"></i>
                 <span class="cat-text">Cosas que admiro de ti</span>
-                <span class="cat-count" id="count-admiracion">3/3</span>
+                <span class="cat-count" id="count-admiracion">-/-</span>
             </button>
         </div>
     </div>
 
     <script>
-        // --- 1. FONDO DE ESTRELLAS ---
+        // --- 1. CONFIGURACIÓN BASE DE DATOS EN LA NUBE (Opcional pero recomendado) ---
+        // Para que se sincronice en todos los celulares, crea una cuenta gratis en jsonbin.io
+        // Crea un bin vacío con "{}" y pega aquí tu BIN ID y tu MASTER KEY
+        const CLOUD_BIN_ID = "6a035989adc21f119a8d5d46"; // Ejemplo: "65b2a1a123456789"
+        const CLOUD_API_KEY = "$2a$10$Et.q25JyixX62pP25Pxr3e0sJGSiPya41ASVx56zD9XAbJx0CuMHq"; // Ejemplo: "$2a$10$TusClavesSecretasDeJsonBin"
+        
+        // --- 2. FONDO DE ESTRELLAS ---
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('stars-container');
             const starCount = window.innerWidth < 768 ? 60 : 150;
@@ -236,7 +253,7 @@
             initSystem();
         });
 
-        // --- 2. BASE DE DATOS DE FRASES ---
+        // --- 3. BASE DE DATOS DE FRASES ---
         const phrasesDB = {
             razones: [
                 "Porque tu luz y mi tranquilidad encajan de forma perfecta y sin esfuerzo.",
@@ -265,26 +282,74 @@
         };
 
         const MAX_DAILY = 3;
-        const LOCK_TIME_MS = 24 * 60 * 60 * 1000; // 24 Horas en milisegundos
+        const LOCK_TIME_MS = 24 * 60 * 60 * 1000;
 
+        // Estructura actualizada con el historial de "vistos" (seen)
         let userData = {
             counts: { razones: 0, anecdotas: 0, admiracion: 0 },
-            resetTimes: { razones: 0, anecdotas: 0, admiracion: 0 } // Timestamp de cuando volverán a estar activos
+            resetTimes: { razones: 0, anecdotas: 0, admiracion: 0 },
+            seen: { razones: [], anecdotas: [], admiracion: [] } // <-- AQUÍ GUARDAMOS LAS QUE YA SALIERON
         };
         
         let exhaustionTimeout;
         let timerInterval;
 
-        // --- 3. LÓGICA DEL SISTEMA Y TIMERS INDEPENDIENTES ---
-        function initSystem() {
-            const storedData = localStorage.getItem('sempiternos_sorpresa_v2'); // Nueva clave para evitar conflictos con la versión anterior
+        // --- 4. LÓGICA DE SINCRONIZACIÓN (NUBE O LOCAL) ---
+        async function loadData() {
+            document.getElementById('cloud-loader').classList.add('active');
+            
+            if (CLOUD_BIN_ID && CLOUD_API_KEY) {
+                try {
+                    const response = await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}/latest`, {
+                        headers: { 'X-Master-Key': CLOUD_API_KEY }
+                    });
+                    const data = await response.json();
+                    if (data.record && data.record.counts) {
+                        userData = data.record;
+                    }
+                } catch (error) {
+                    console.error("Error cargando de la nube, usando modo local:", error);
+                    loadLocalData();
+                }
+            } else {
+                loadLocalData();
+            }
+            document.getElementById('cloud-loader').classList.remove('active');
+        }
+
+        function loadLocalData() {
+            const storedData = localStorage.getItem('sempiternos_sorpresa_v3');
             if (storedData) {
                 userData = JSON.parse(storedData);
-            } else {
-                saveData();
             }
+            // Asegurarse de que exista el array "seen" en caso de usuarios antiguos
+            if(!userData.seen) userData.seen = { razones: [], anecdotas: [], admiracion: [] };
+        }
 
-            // Iniciar el reloj general que revisa los tiempos cada segundo
+        async function saveData() {
+            // Siempre guarda local por seguridad
+            localStorage.setItem('sempiternos_sorpresa_v3', JSON.stringify(userData));
+            
+            if (CLOUD_BIN_ID && CLOUD_API_KEY) {
+                document.getElementById('cloud-loader').classList.add('active');
+                try {
+                    await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_BIN_ID}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': CLOUD_API_KEY
+                        },
+                        body: JSON.stringify(userData)
+                    });
+                } catch (error) {
+                    console.error("Error guardando en la nube", error);
+                }
+                document.getElementById('cloud-loader').classList.remove('active');
+            }
+        }
+
+        async function initSystem() {
+            await loadData(); // Espera a traer los datos de la base de datos o local
             startTimers();
 
             if (checkAllBlocked()) {
@@ -292,10 +357,6 @@
             } else {
                 showInitialState();
             }
-        }
-
-        function saveData() { 
-            localStorage.setItem('sempiternos_sorpresa_v2', JSON.stringify(userData)); 
         }
 
         function checkAllBlocked() {
@@ -315,7 +376,6 @@
                 let stateChanged = false;
 
                 ['razones', 'anecdotas', 'admiracion'].forEach(cat => {
-                    // Si está bloqueado y el tiempo ya pasó, lo reseteamos
                     if (userData.counts[cat] >= MAX_DAILY && now >= userData.resetTimes[cat]) {
                         userData.counts[cat] = 0;
                         userData.resetTimes[cat] = 0;
@@ -324,7 +384,7 @@
                 });
 
                 if (stateChanged) saveData();
-                updateButtonsUI(); // Actualiza los textos de los botones constantemente
+                updateButtonsUI();
             }, 1000);
         }
 
@@ -338,7 +398,6 @@
                 if (userData.counts[cat] >= MAX_DAILY) {
                     const diff = userData.resetTimes[cat] - now;
                     if (diff > 0) {
-                        // Calcular tiempo restante
                         const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                         const s = Math.floor((diff % (1000 * 60)) / 1000);
@@ -383,27 +442,44 @@
             }, delay);
         }
 
+        // --- 5. LÓGICA DE NO-REPETICIÓN ---
         function generatePhrase(category) {
             if (userData.counts[category] >= MAX_DAILY) return; 
             clearTimeout(exhaustionTimeout); 
 
-            userData.counts[category]++;
+            // 1. Buscamos los índices de las frases que AÚN NO han salido
+            let availableIndexes = phrasesDB[category]
+                .map((_, index) => index)
+                .filter(index => !userData.seen[category].includes(index));
+
+            // 2. Si ya salieron todas, reseteamos el historial de esta categoría
+            if (availableIndexes.length === 0) {
+                userData.seen[category] = [];
+                availableIndexes = phrasesDB[category].map((_, index) => index);
+            }
+
+            // 3. Elegimos una al azar de las disponibles
+            const randomIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
+            const randomPhrase = phrasesDB[category][randomIndex];
+
+            // 4. La agregamos al historial de "vistas"
+            userData.seen[category].push(randomIndex);
             
-            // Si es la tercera vez, asignamos el tiempo de reseteo para dentro de 24 horas exactas
+            // 5. Aumentamos el contador de uso diario
+            userData.counts[category]++;
             if (userData.counts[category] >= MAX_DAILY) {
                 userData.resetTimes[category] = Date.now() + LOCK_TIME_MS;
             }
-            saveData();
+            
+            saveData(); // Guarda localmente y en la nube
 
-            const array = phrasesDB[category];
-            const randomPhrase = array[Math.floor(Math.random() * array.length)];
-
+            // Renderizar UI
             const display = document.getElementById('phrase-display');
             const catLabel = document.getElementById('category-label');
             const visual = document.getElementById('visual-container');
 
             display.classList.add('fade-out');
-            visual.classList.add('fade-out'); // Ocultar el corazón suavemente
+            visual.classList.add('fade-out'); 
 
             setTimeout(() => {
                 visual.style.display = 'none'; 
@@ -419,12 +495,12 @@
                 updateButtonsUI();
 
                 if (checkAllBlocked()) {
-                    showExhaustedState(10000); // 10 segundos para leer la última antes de volver al estado bloqueado
+                    showExhaustedState(10000); 
                 }
             }, 400); 
         }
 
-        // --- 4. FUNCIÓN SECRETA DE RESETEO ---
+        // --- 6. FUNCIÓN SECRETA DE RESETEO ---
         let tapCount = 0;
         let tapTimer;
 
@@ -432,21 +508,19 @@
             tapCount++;
             clearTimeout(tapTimer);
             
-            // Si no toca 3 veces en menos de 1.5 segundos, se reinicia el contador de toques
             tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
 
             if (tapCount === 3) {
-                // Reiniciar toda la data
                 userData = {
                     counts: { razones: 0, anecdotas: 0, admiracion: 0 },
-                    resetTimes: { razones: 0, anecdotas: 0, admiracion: 0 }
+                    resetTimes: { razones: 0, anecdotas: 0, admiracion: 0 },
+                    seen: { razones: [], anecdotas: [], admiracion: [] } // El reset también borra el historial
                 };
                 saveData();
                 updateButtonsUI();
                 showInitialState();
                 tapCount = 0;
 
-                // Pequeño flashazo blanco en pantalla para confirmarte que funcionó el truco
                 const overlay = document.getElementById('transition-overlay');
                 overlay.style.background = "white";
                 overlay.style.opacity = "0.5";
@@ -459,7 +533,7 @@
             }
         }
 
-        // --- 5. FUNCIÓN VOLVER ---
+        // --- 7. FUNCIÓN VOLVER ---
         function backToDashboard() {
             sessionStorage.setItem('showDashboard', 'true');
             const zoomOverlay = document.getElementById('transition-overlay');
